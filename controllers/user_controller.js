@@ -17,7 +17,7 @@ login: async (req, res) => {
   const token = jwt.sign(
     { userId: user._id, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: '15m' } // Short-lived token
+    { expiresIn: '15m' } 
   );
 
   // Send token in HTTP-only cookie
