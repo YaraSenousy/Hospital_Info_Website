@@ -5,5 +5,6 @@ const verifyRole = require('../middlewares/verifyRole');
 const verifyToken = require('../middlewares/verifyToken');
 
 router.delete("/",[verifyToken,verifyRole('admin')],patientController.removePatient);
+router.get("/getPatients",[verifyToken,verifyRole('doctor','admin')],patientController.getPatients);
 
 module.exports = router;
