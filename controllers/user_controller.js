@@ -109,6 +109,22 @@ const userController = {
         .json({ message: "Error updating user", error: error.message });
     }
   },
+
+  getProfile: async (req, res) => {
+    const userId = req.user._id;
+    const fieldsToReturn = "name birthDate email PhoneNumber gender image";
+    if (userId) {
+      try {
+        const user = await User.findById(userId).select(fieldsToReturn);
+        res.json(user);
+        
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(404).json({ error: "Couldn't find the user" });
+    }
+  },
 };
 
 module.exports = userController;

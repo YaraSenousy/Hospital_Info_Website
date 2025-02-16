@@ -8,5 +8,6 @@ const upload = require('../middlewares/multer');
 router.post('/login',userController.login);
 router.put('/update-profile-picture',[verifyToken,verifyRole(['patient','doctor']),upload.single('image')],userController.updatepfp);
 router.put('/update-profile',[verifyToken,verifyRole(['patient','doctor'])],userController.updateprofile);
+router.get('/profile',[verifyToken],userController.getProfile);
 
 module.exports = router;
