@@ -1,4 +1,4 @@
-const [User, Doctor] = require("../models/User.model")
+const {User, Doctor} = require("../models/User.model")
 
 const doctorController = {
     removeDoctor: async (req, res) => {
