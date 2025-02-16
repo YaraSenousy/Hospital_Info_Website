@@ -1,6 +1,6 @@
 const User = require("../models/User.model");
 const jwt = require("jsonwebtoken");
-const { uploadImage } = require("../config/cloudinaryhelpers");
+const { uploadImage,deleteImage } = require("../config/cloudinaryhelpers");
 
 const userController = {
   login: async (req, res) => {
@@ -44,6 +44,10 @@ const userController = {
 
       // Update the user's profile picture in the database
       const userId = req.user.id;
+      //first delete current url
+      const currentimageUrl = await User.findOne({ _id: userId }).image;
+      await deleteImage(currentimageUrl);
+      //now update imageurl
       const user = await User.findByIdAndUpdate(
         userId,
         { profilePicture: imageUrl }, // Update the profilePicture field
