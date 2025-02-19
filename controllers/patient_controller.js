@@ -34,7 +34,7 @@ const patientController = {
       // Pagination
       const page = parseInt(req.query.page);
       const limit = parseInt(req.query.limit);
-      let patientsQuery = User.find(filter).select(fieldsToReturn).lean();
+      let patientsQuery = await User.find(filter).select(fieldsToReturn).lean();
 
       if (page && limit) {
         patientsQuery = patientsQuery.skip((page - 1) * limit).limit(limit);

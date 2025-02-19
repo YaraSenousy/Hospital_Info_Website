@@ -7,7 +7,7 @@ const userController = {
     const { email, password } = req.body;
 
     // Validate user credentials
-    const user = await User.findOne({ email });
+    const user = await User.find({ email:email });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
