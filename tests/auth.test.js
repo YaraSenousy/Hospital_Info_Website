@@ -22,7 +22,7 @@ describe("Authentication Tests", () => {
     email: faker.internet.email(), // Don't hardcode email
     password: "ValidPassword1", // Make sure password meets requirements
     birthDate: faker.date.past({ years: 30 }).toISOString().split("T")[0],
-    phoneNumber: "+1" + faker.string.numeric(10), // Format phone number correctly
+    phoneNumber: "+201158820884", // Format phone number correctly
     role,
     gender: faker.helpers.arrayElement(["M", "F"]), // Match schema enum values
     expertiseLevel: role === "doctor" ? [faker.lorem.word(), faker.lorem.word()] : undefined,
