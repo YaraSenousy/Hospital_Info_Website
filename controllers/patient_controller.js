@@ -1,4 +1,5 @@
 const { User, Doctor } = require("../models/User.model");
+const bcrypt = require("bcryptjs");
 
 const patientController = {
   removePatient: async (req, res) => {
@@ -57,10 +58,14 @@ const patientController = {
     }
   },
   signup: async (req, res) => {
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
     const patient = new User({
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password,
+      password: hashedPassword,
       birthDate: req.body.birthDate,
       phoneNumber: req.body.phoneNumber,
       gender: req.body.gender,

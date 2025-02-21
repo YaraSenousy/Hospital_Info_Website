@@ -1,7 +1,7 @@
 const { User } = require("../models/User.model");
 const jwt = require("jsonwebtoken");
 const { uploadImage,deleteImage } = require("../config/cloudinaryhelpers");
-
+const bcrypt = require("bcryptjs");
 
 const userController = {
   login: async (req, res) => {
@@ -10,7 +10,15 @@ const userController = {
     try {
       // Validate user credentials
       const user = await User.findOne({ email });
-      if (!user || user.password !== password) {
+
+      if (!user){
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      
+      // Compare entered password with stored hashed password
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
