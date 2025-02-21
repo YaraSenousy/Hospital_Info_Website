@@ -1,9 +1,10 @@
 const { User, Doctor } = require("../models/User.model");
+const bcrypt = require("bcryptjs");
 
 const patientController = {
   removePatient: async (req, res) => {
     try {
-      const patient = await User.findByIdAndDelete(req.user._id);
+      const patient = await User.findByIdAndDelete(req.user.userId);
       patient
         ? res.json(patient)
         : res.status(404).json({ error: "Couldn't find the doctor" });
@@ -34,7 +35,7 @@ const patientController = {
       // Pagination
       const page = parseInt(req.query.page);
       const limit = parseInt(req.query.limit);
-      let patientsQuery = User.find(filter).select(fieldsToReturn).lean();
+      let patientsQuery = await User.find(filter).select(fieldsToReturn).lean();
 
       if (page && limit) {
         patientsQuery = patientsQuery.skip((page - 1) * limit).limit(limit);
@@ -57,12 +58,17 @@ const patientController = {
     }
   },
   signup: async (req, res) => {
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
     const patient = new User({
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password,
+      password: hashedPassword,
       birthDate: req.body.birthDate,
-      phoneNumber: req.body.birthDate,
+      phoneNumber: req.body.phoneNumber,
+      gender: req.body.gender,
       role: 'patient'
     });
     try {
