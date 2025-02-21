@@ -128,7 +128,11 @@ const userController = {
   },
 
   getProfile: async (req, res) => {
-    const userId = req.user._id;
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const userId = req.user.userId;
+    console.log('User ID:', userId); // Log the user ID
     const fieldsToReturn = "name birthDate email PhoneNumber gender image";
     if (userId) {
       try {

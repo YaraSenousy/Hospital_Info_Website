@@ -228,6 +228,7 @@ describe("Authentication Tests", () => {
       }
       
       authCookie = loginRes.headers['set-cookie'];
+      console.log('Auth Cookie:', authCookie);
     });
 
     it("should allow access to profile with valid token", async () => {
@@ -235,6 +236,7 @@ describe("Authentication Tests", () => {
         .get("/hospital/user/profile")
         .set("Cookie", authCookie);
       
+        console.log('Profile Response:', res.body);
       if (res.statusCode !== 200) {
         console.log('\nProfile access test failed:');
         console.log('Error message:', res.body.error || res.body.message || 'No error message provided');
