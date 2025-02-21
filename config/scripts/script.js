@@ -106,3 +106,26 @@ function scrollToFirstMatch() {
         });
     }
 }
+
+// Function to set profile picture
+function setProfilePicture(username) {
+    const profilePic = document.getElementById('profilePic');
+    
+    // Try to load user-specific profile picture
+    const userPicPath = `../images/profiles/${username}.jpg`;
+    
+    // Create a temporary image to test if the user picture exists
+    const tempImg = new Image();
+    tempImg.onload = function() {
+        // If image loads successfully, use it
+        profilePic.src = userPicPath;
+    };
+    tempImg.onerror = function() {
+        // If image fails to load, use default
+        profilePic.src = '../images/default-user.png';
+    };
+    tempImg.src = userPicPath;
+}
+
+// Example usage:
+// setProfilePicture('johndoe');
