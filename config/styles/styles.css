@@ -1,0 +1,77 @@
+mark {
+    background-color: yellow;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.navbar{
+    background-color: rgba(80, 47, 3, 0.2) !important;
+}
+
+.navbar-brand img {
+    opacity: 1;
+}
+
+.nav-link{
+    color: black !important;
+}
+
+.nav-link:hover {
+    color: rgba(80, 47, 3, 0.8) !important;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(80, 47, 3, 0.8) !important;
+    color: white !important;
+}
+
+.nav-link.active {
+    color: white !important;
+    background-color: rgba(80, 47, 3, 0.8) !important;
+    font-weight: bold;
+}
+
+.btn{
+    background-color: rgba(80, 47, 3, 0.3) !important;
+    color: black !important;
+    border: none !important;
+}
+
+.btn:hover{
+    background-color: rgba(80, 47, 3, 0.8) !important;
+    color: white !important;
+}
+
+.btn-call {
+    background-color: rgba(80, 47, 3, 0.8) !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    border-radius: 25px !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.btn-call:hover {
+    background-color: rgba(80, 47, 3, 1) !important;
+    transform: scale(1.05);
+}
+
+.map-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.map-container iframe {
+    width: 100%;
+    border-radius: 10px;
+}
+
+
+
