@@ -9,30 +9,58 @@ const currentUser = {
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    initializeProfile();
+    fetchUserInfo();
 });
 
-function initializeProfile() {
+async function fetchUserInfo() {
+    try {
+        const response = await fetch(API_ENDPOINTS.userInfo);
+        
+        if (response.status === 401 || response.status === 403) {
+            // Unauthorized or Forbidden - redirect to login
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        if (!response.ok) throw new Error('Failed to fetch user info');
+        
+        const userData = await response.json();
+        
+        // Check if userData is empty or null
+        if (!userData || Object.keys(userData).length === 0) {
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        initializeProfile(userData);
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        // Redirect to login on any error
+        window.location.href = 'login.html';
+    }
+}
+
+function initializeProfile(userData) {
     // Set user info
-    document.getElementById('userName').textContent = currentUser.name;
-    document.getElementById('userRole').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+    document.getElementById('userName').textContent = userData.name;
+    document.getElementById('userRole').textContent = userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
 
     // Show appropriate view
     hideAllViews();
-    document.getElementById(`${currentUser.role}View`).style.display = 'block';
+    document.getElementById(`${userData.role}View`).style.display = 'block';
 
     // Load initial data
-    if (currentUser.role === 'admin') {
+    if (userData.role === 'admin') {
         loadDoctors();
-    } else if (currentUser.role === 'doctor') {
+    } else if (userData.role === 'doctor') {
         loadPatients();
-    } else if (currentUser.role === 'patient') {
+    } else if (userData.role === 'patient') {
         loadDoctors();
     }
 
     // Show/hide edit button based on role
     const editButton = document.getElementById('editProfileBtn');
-    editButton.style.display = currentUser.role === 'admin' ? 'none' : 'block';
+    editButton.style.display = userData.role === 'admin' ? 'none' : 'block';
 }
 
 function hideAllViews() {
