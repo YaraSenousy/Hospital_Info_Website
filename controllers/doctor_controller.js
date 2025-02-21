@@ -53,6 +53,36 @@ const doctorController = {
       res.status(500).json({ error: err.message });
     }
   },
+  addDoctor: async (req, res) => {
+    const doctor = new Doctor({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      birthDate: req.body.birthDate,
+      phoneNumber: req.body.birthDate,
+      role: "doctor",
+    });
+
+    if (req.body.expertiseLevel) {
+      doctor.expertiseLevel = req.body.expertiseLevel;
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "you need to enter the expertise Level",
+      });
+    }
+
+    try {
+      await doctor.save();
+      res.status(201).json(doctor);
+    } catch (err) {
+      if (err.name === "ValidationError") {
+        res.status(400).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: err.message });
+      }
+    }
+  },
 };
 
 module.exports = doctorController;

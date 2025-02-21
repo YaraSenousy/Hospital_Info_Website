@@ -56,6 +56,26 @@ const patientController = {
       res.status(500).json({ error: err.message });
     }
   },
+  signup: async (req, res) => {
+    const patient = new User({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      birthDate: req.body.birthDate,
+      phoneNumber: req.body.birthDate,
+      role: 'patient'
+    });
+    try {
+      await patient.save();
+      res.status(201).json(patient);
+    } catch (err) {
+      if (err.name === "ValidationError") {
+        res.status(400).json({ error: err.message });
+      } else {
+        res.status(500).json({ error: err.message });
+      }
+    }
+  },
 };
 
 module.exports = patientController;

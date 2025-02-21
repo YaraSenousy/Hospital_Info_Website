@@ -5,8 +5,18 @@ const signupValidationRules = [
   //name
   body('name').notEmpty().withMessage('Name is required'), 
 
-  //email
-  body('email').isEmail().withMessage('Invalid email'),
+  // Validate email
+  body('email')
+  .notEmpty()
+  .withMessage('Email is required')
+  .isEmail()
+  .withMessage('Invalid email address')
+  .custom(async (email) => {
+    const user = await User.findOne({ email });
+    if (user) {
+      throw new Error('Email already in use');
+    }
+  }),
 
   //password
   body('password')
