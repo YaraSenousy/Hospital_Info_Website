@@ -72,7 +72,7 @@ const doctorController = {
     if (req.body.expertiseLevel) {
       doctor.expertiseLevel = req.body.expertiseLevel;
     } else {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "you need to enter the expertise Level",
       });
