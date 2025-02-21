@@ -62,7 +62,8 @@ const patientController = {
       email: req.body.email,
       password: req.body.password,
       birthDate: req.body.birthDate,
-      phoneNumber: req.body.birthDate,
+      phoneNumber: req.body.phoneNumber,
+      gender: req.body.gender,
       role: 'patient'
     });
     try {
