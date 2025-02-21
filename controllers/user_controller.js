@@ -56,7 +56,7 @@ const userController = {
       const imageUrl = await uploadImage(req.file.path);
 
       // Update the user's profile picture in the database
-      const userId = req.user.id;
+      const userId = req.user.userId;
       //first delete current url
       const currentimageUrl = await User.findOne({ _id: userId }).image;
       await deleteImage(currentimageUrl);
@@ -91,7 +91,7 @@ const userController = {
   },
   updateprofile: async (req, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user.userId;
       const updateData = req.body; // Get the validated update data from the request body
 
       // Update only the fields provided in the request body using $set

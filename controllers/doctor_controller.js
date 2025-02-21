@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const doctorController = {
   removeDoctor: async (req, res) => {
     try {
-      const doctor = await Doctor.findByIdAndDelete(req.user._id);
+      const doctor = await Doctor.findByIdAndDelete(req.user.userId);
       doctor
         ? res.json(doctor)
         : res.status(404).json({ error: "Couldn't find the doctor" });
