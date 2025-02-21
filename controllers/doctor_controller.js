@@ -58,8 +58,9 @@ const doctorController = {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
-      birthDate: req.body.birthDate,
+      birthDate: req.body.password,
       phoneNumber: req.body.birthDate,
+      gender: req.body.gender,
       role: "doctor",
     });
 
