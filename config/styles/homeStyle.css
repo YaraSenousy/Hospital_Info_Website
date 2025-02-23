@@ -9,11 +9,13 @@
 }
 
 .btn{
-    border-radius: 30px;
-    background-color:rgb(216, 213, 202);
+   border-radius: 30px;
+   background-color:rgb(216, 213, 202);
    font-weight: bold;
    padding: 10px;
    width: 150px;
+   border: 2px solid rgba(80, 47, 3, 0.664) !important;
+   color: rgba(80, 47, 3, 0.664) !important;
    
 }
 
@@ -24,7 +26,29 @@
   
   
   .btn:focus {
-    outline: 2px solid #0056b3;
+    outline: 2px rgba(80, 47, 3, 0.664) !important;
+    outline-offset: 4px;
+  }
+
+  .btn2{
+    border-radius: 30px;
+    background-color: rgba(80, 47, 3, 0.664) !important;
+    font-weight: bold;
+    padding: 10px;
+    width: 150px;
+    border: 2px solid rgba(80, 47, 3, 0.664) !important;
+    color:rgb(216, 213, 202);
+    
+ }
+ 
+ .btn2:hover {
+    background-color:  rgb(216, 213, 202); 
+    transform: scale(1.05); 
+  }
+  
+  
+  .btn2:focus {
+    outline: 2px rgb(216, 213, 202);
     outline-offset: 4px;
   }
 
@@ -72,5 +96,10 @@
     justify-content: center;
     text-align: center;
      margin: auto;
+}
+
+.feedback{
+    background-color: rgb(216, 213, 202);
+    height: 700px;
 }
 
