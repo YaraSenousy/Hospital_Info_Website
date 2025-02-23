@@ -1,7 +1,7 @@
 // auth.test.js - Signup, Login & Token Authentication Tests
 const request = require("supertest");
 const { faker } = require("@faker-js/faker");
-const app = require("../index"); // Ensure correct path to your Express app
+const app = require("../index1"); // Ensure correct path to your Express app
 const bcrypt = require("bcryptjs");
 const { User, Doctor } = require("../models/User.model"); // Add this import
 const mongoose = require("mongoose"); // Add this import
