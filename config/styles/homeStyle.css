@@ -4,7 +4,7 @@
 }
 
 .first{
-    height: 700px;
+    height: 900px;
     background-color: white;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .btn:hover {
-    background-color: #0056b3; 
+    background-color:  rgba(80, 47, 3, 0.664) !important; 
     transform: scale(1.05); 
   }
   
@@ -48,3 +48,29 @@
     font-weight:300;
     font-size: medium;
 }
+
+#carouselExampleCaptions {
+    max-width: 700px;
+    margin: 0 auto; 
+  }
+  
+  .carousel-inner img {
+    width: 100%;  
+    height: auto;
+  }
+  
+  .carousel-control-prev-icon, 
+.carousel-control-next-icon {
+  background-color: grey;
+  filter: brightness(1.7);
+}
+
+.reviews{
+    padding: 50px;
+    gap: 30px;
+    width: 100vw;
+    justify-content: center;
+    text-align: center;
+     margin: auto;
+}
+
