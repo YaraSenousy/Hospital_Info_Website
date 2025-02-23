@@ -1,0 +1,50 @@
+
+*{
+    font-family: 'Josefin Sans',sans-serif;
+}
+
+.first{
+    height: 700px;
+    background-color: white;
+}
+
+.btn{
+    border-radius: 30px;
+    background-color:rgb(216, 213, 202);
+   font-weight: bold;
+   padding: 10px;
+   width: 150px;
+   
+}
+
+.btn:hover {
+    background-color: #0056b3; 
+    transform: scale(1.05); 
+  }
+  
+  
+  .btn:focus {
+    outline: 2px solid #0056b3;
+    outline-offset: 4px;
+  }
+
+.header1{
+    width: 350px;
+    margin-left: 30px;
+    margin-top: 100px;
+    position: relative;
+    padding: 30px;
+    
+}
+.rate{
+    
+    margin-left: 50px;
+    position: relative;
+    
+    margin-bottom: 50px;
+    
+}
+.value{
+    font-weight:300;
+    font-size: medium;
+}
