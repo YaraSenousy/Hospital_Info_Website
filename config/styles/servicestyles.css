@@ -1,0 +1,105 @@
+*{
+    font-family: 'Josefin Sans',sans-serif;
+}
+
+.slide1{
+    height: 500px ;
+}
+.carousel {
+    height: 500px;
+}
+
+.carousel-inner, .carousel-item {
+    height: 500px;
+}
+
+.carousel-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover; 
+    filter: brightness(0.6);
+}
+.custom-btn {
+    background-color: rgba(80, 47, 3, 0.664) !important;
+    border-color:rgba(80, 47, 3, 0.664) !important;
+    color: white; 
+  }
+
+  .service1{
+    height: auto;
+    background-color: rgb(236, 233, 222);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 10px;
+  }
+  .aboutHeader {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 15px;
+    
+}
+
+.aboutText {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+
+.header-title {
+    font-size: 1.8rem;
+    letter-spacing: 4px;
+}
+
+.header-line {
+    width: 50px;
+    border: 1px solid #000;
+}
+
+.header-subtitle {
+    font-size: 1.2rem;
+}
+
+.service2{
+
+    height: auto;
+    background-color: rgb(236, 233, 222);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 10px;
+}
+.service3{
+    
+    height: auto;
+    background-color: rgb(236, 233, 222);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 10px;
+}
+
+.service4{
+    
+    height: auto;
+    background-color: rgb(236, 233, 222);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 10px;
+}
+
+.service5{
+    
+    height: auto;
+    background-color: rgb(236, 233, 222);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 10px;
+}
+
+.service6{
+    
+    height: auto;
+    background-color: rgb(236, 233, 222);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    margin-top: 10px;
+}
