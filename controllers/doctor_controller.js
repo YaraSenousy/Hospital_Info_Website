@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const doctorController = {
   removeDoctor: async (req, res) => {
     try {
-      const doctor = await Doctor.findByIdAndDelete(req.user.userId);
+      const doctor = await Doctor.findByIdAndDelete(req.body.id);
       doctor
         ? res.json(doctor)
         : res.status(404).json({ error: "Couldn't find the doctor" });
@@ -20,9 +20,9 @@ const doctorController = {
         "PhoneNumber",
         "expertiseLevel",
         "birthDate",
-        "email",
+        "email"
       ]; // List of allowed query parameters
-      const filter = {};
+      let filter = {};
 
       for (const key of allowedFilters) {
         if (req.query[key]) {
@@ -31,7 +31,7 @@ const doctorController = {
       }
 
       //the fields to return
-      const fieldsToReturn = "name PhoneNumber";
+      let fieldsToReturn = "name PhoneNumber expertiseLevel";
 
       //if it admin return the image
       if (req.user.role == "admin") {
@@ -41,7 +41,7 @@ const doctorController = {
       // Pagination
       const page = parseInt(req.query.page);
       const limit = parseInt(req.query.limit);
-      let doctorsQuery = await Doctor.find(filter).select(fieldsToReturn);
+      let doctorsQuery = Doctor.find(filter).select(fieldsToReturn);
 
       if (page && limit) {
         doctorsQuery = doctorsQuery.skip((page - 1) * limit).limit(limit);
