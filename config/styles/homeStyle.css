@@ -6,8 +6,8 @@
 
 
 .first{
-    
     background-color: white;
+   
 }
 
 .btn{
@@ -122,5 +122,7 @@
         margin: 30px !important;
         border-radius: 0 !important;
     }
+
+    
 
 }
