@@ -110,11 +110,24 @@
 
 .feedback{
     background-color: rgb(216, 213, 202);
-    
+   
 }
 
 @media (max-width: 768px) {
-   
+    .feedback .row {
+        flex-direction: column;
+        height: auto !important;
+    }
+
+    .feedback .col-lg-6 {
+        width: 100% !important;
+    }
+
+    .feedback img {
+        height: auto !important;
+        width: 100% !important;
+    }
+
     .feedback form {
         max-width: 100% !important;
         width: 100% !important;
@@ -122,7 +135,7 @@
         margin: 30px !important;
         border-radius: 0 !important;
     }
-
-    
-
 }
+
+
+
