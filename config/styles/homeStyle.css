@@ -3,8 +3,10 @@
     font-family: 'Josefin Sans',sans-serif;
 }
 
+
+
 .first{
-    height: 900px;
+    
     background-color: white;
 }
 
@@ -73,6 +75,14 @@
     font-size: medium;
 }
 
+.doctors {
+   
+    padding-top: 50px;
+    padding-bottom: 50px;
+   
+}
+
+
 #carouselExampleCaptions {
     max-width: 700px;
     margin: 0 auto; 
@@ -100,6 +110,17 @@
 
 .feedback{
     background-color: rgb(216, 213, 202);
-    height: 700px;
+    
 }
 
+@media (max-width: 768px) {
+   
+    .feedback form {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 40px !important;
+        margin: 30px !important;
+        border-radius: 0 !important;
+    }
+
+}
