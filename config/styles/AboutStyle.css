@@ -2,7 +2,12 @@
     font-family: 'Josefin Sans',sans-serif;
 }
 
+body{
+    padding-top: 3rem !important;
+}
+
 .slide1{
+    padding-top: 3rem !important;
     height: 500px ;
 }
 .carousel {
