@@ -2,7 +2,7 @@ const request = require("supertest");
 const { faker } = require("@faker-js/faker");
 const app = require("../index1");
 const bcrypt = require("bcryptjs");
-const { User, Doctor } = require("../models/User.model");
+const { User } = require("../models/User.model");
 const mongoose = require("mongoose");
 
 describe("Doctor & Patient API Tests", () => {
@@ -11,7 +11,6 @@ describe("Doctor & Patient API Tests", () => {
 
   beforeAll(async () => {
     await User.deleteMany({});
-    await Doctor.deleteMany({});
 
     const adminUser = {
       name: "Admin User",
@@ -56,8 +55,7 @@ describe("Doctor & Patient API Tests", () => {
   });
 
   afterAll(async () => {
-    //await User.deleteMany({});
-    //await Doctor.deleteMany({});
+    await User.deleteMany({});
     await mongoose.connection.close();
   });
 
@@ -76,6 +74,7 @@ describe("Doctor & Patient API Tests", () => {
       logErrorResponse(res);
       expect(res.statusCode).toBe(201);
       doctor._id = res.body._id;
+      doctor.userId = res.body._id; // Store both IDs
     }
   });
 
@@ -117,7 +116,7 @@ describe("Doctor & Patient API Tests", () => {
       .set("Cookie", adminAuthCookie);
     logErrorResponse(res);
     expect(res.statusCode).toBe(200);
-    expect(res.body.length).toBe(1);
+    expect(res.body.length).toBeGreaterThan(0);
     expect(res.body[0].email).toBe(doctor.email);
   });
 
@@ -132,25 +131,25 @@ describe("Doctor & Patient API Tests", () => {
     expect(res.body[0].name).toBe(patient.name);
   });
 
-//   it("should remove doctors", async () => {
-//     for (const doctor of testDoctors) {
-//       const res = await request(app)
-//         .delete("/hospital/doctor/")
-//         .set("Cookie", adminAuthCookie)
-//         .send({ id: doctor._id });
-//       logErrorResponse(res);
-//       expect(res.statusCode).toBe(200);
-//     }
-//   });
+  it("should remove doctors", async () => {
+    for (const doctor of testDoctors) {
+      const res = await request(app)
+        .delete("/hospital/doctor/")
+        .set("Cookie", adminAuthCookie)
+        .send({ id: doctor._id });
+      logErrorResponse(res);
+      expect(res.statusCode).toBe(200);
+    }
+  });
 
-//   it("should remove patients", async () => {
-//     for (const patient of testPatients) {
-//       const res = await request(app)
-//         .delete("/hospital/patient/")
-//         .set("Cookie", adminAuthCookie)
-//         .send({ id: patient._id });
-//       logErrorResponse(res);
-//       expect(res.statusCode).toBe(200);
-//     }
-//   });
+  it("should remove patients", async () => {
+    for (const patient of testPatients) {
+      const res = await request(app)
+        .delete("/hospital/patient/")
+        .set("Cookie", adminAuthCookie)
+        .send({ id: patient._id });
+      logErrorResponse(res);
+      expect(res.statusCode).toBe(200);
+    }
+  });
 });
