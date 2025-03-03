@@ -3,18 +3,16 @@ const request = require("supertest");
 const { faker } = require("@faker-js/faker");
 const app = require("../index1"); // Ensure correct path to your Express app
 const bcrypt = require("bcryptjs");
-const { User, Doctor } = require("../models/User.model"); // Add this import
+const { User } = require("../models/User.model"); // Add this import
 const mongoose = require("mongoose"); // Add this import
 
 describe("Authentication Tests", () => {
   beforeAll(async () => {
     await User.deleteMany({});
-    await Doctor.deleteMany({});
   });
 
   afterAll(async () => {
     await User.deleteMany({});
-    await Doctor.deleteMany({});
     await mongoose.connection.close();
   });
 

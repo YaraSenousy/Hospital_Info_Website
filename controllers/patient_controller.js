@@ -1,10 +1,10 @@
-const { User, Doctor } = require("../models/User.model");
+const { User } = require("../models/User.model");
 const bcrypt = require("bcryptjs");
 
 const patientController = {
   removePatient: async (req, res) => {
     try {
-      const patient = await User.findByIdAndDelete(req.user.userId);
+      const patient = await User.findByIdAndDelete(req.body.id);
       patient
         ? res.json(patient)
         : res.status(404).json({ error: "Couldn't find the doctor" });
@@ -24,7 +24,7 @@ const patientController = {
       }
 
       //the fields to return
-      const fieldsToReturn = "name birthDate PhoneNumber";
+      let fieldsToReturn = "name birthDate PhoneNumber";
 
       //if it admin return the image
 
@@ -35,7 +35,7 @@ const patientController = {
       // Pagination
       const page = parseInt(req.query.page);
       const limit = parseInt(req.query.limit);
-      let patientsQuery = await User.find(filter).select(fieldsToReturn).lean();
+      let patientsQuery = User.find(filter).select(fieldsToReturn).lean();
 
       if (page && limit) {
         patientsQuery = patientsQuery.skip((page - 1) * limit).limit(limit);
