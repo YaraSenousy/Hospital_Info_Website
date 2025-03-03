@@ -1,6 +1,12 @@
 *{
     font-family: 'Josefin Sans',sans-serif;
 }
+
+.first{
+    background-color: white;
+   
+}
+
 mark {
     background-color: yellow;
     padding: 2px;
@@ -86,6 +92,11 @@ mark {
     box-shadow: 0 2px 5px rgba(80, 47, 3, 0.3) !important;
 }
 
+.btn:focus {
+    outline: 2px rgba(80, 47, 3, 0.664) !important;
+    outline-offset: 4px;
+  }
+
 .card-footer .btn {
     padding: 4px 14px !important;
     margin: 4px !important;
@@ -126,9 +137,15 @@ mark {
 .btn2:hover {
     background-color: rgba(80, 47, 3, 0.8) !important;
     color: white !important;
-    transform: translateY(-1px) !important;
+    transform: scale(1.05) !important;
     box-shadow: 0 2px 4px rgba(80, 47, 3, 0.2) !important;
 }
+
+.btn2:focus {
+    outline: 2px rgb(216, 213, 202);
+    outline-offset: 4px;
+  }
+
 
 .btn2-call {
     background-color: rgba(80, 47, 3, 0.8) !important;
@@ -152,3 +169,73 @@ mark {
 }
 
 
+.header1{
+    width: 350px;
+    margin-left: 30px;
+    margin-top: 100px;
+    position: relative;
+    padding: 30px;
+    
+}
+.rate{
+    
+    margin-left: 50px;
+    position: relative;
+    
+    margin-bottom: 50px;
+    
+}
+.value{
+    font-weight:300;
+    font-size: medium;
+}
+
+.doctors {
+   
+    padding-top: 50px;
+    padding-bottom: 50px;
+   
+}
+
+
+#carouselExampleCaptions {
+    max-width: 700px;
+    margin: 0 auto; 
+  }
+  
+  .carousel-inner img {
+    width: 100%;  
+    height: auto;
+  }
+  
+  .carousel-control-prev-icon, 
+.carousel-control-next-icon {
+  background-color: grey;
+  filter: brightness(1.7);
+}
+
+.reviews{
+    padding: 50px;
+    gap: 30px;
+    width: 100vw;
+    justify-content: center;
+    text-align: center;
+     margin: auto;
+}
+
+.feedback{
+    background-color: rgb(216, 213, 202);
+    
+}
+
+@media (max-width: 768px) {
+   
+    .feedback form {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 40px !important;
+        margin: 30px !important;
+        border-radius: 0 !important;
+    }
+
+}
