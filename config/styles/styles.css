@@ -48,15 +48,14 @@ mark {
 }
 
 .btn {
-    background-color: rgba(80, 47, 3, 0.2) !important;
-    color: rgba(80, 47, 3, 0.9) !important;
-    border: none !important;
-    padding: 6px 16px !important;
+    background-color: rgba(80, 47, 3, 0.3) !important;
+    color: rgba(80,47,3,0.8) !important;
+    border:none !important;
     font-size: 0.9rem !important;
     border-radius: 25px !important;
     transition: all 0.3s ease !important;
     margin-bottom: 0.5rem !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
 }
 
 .btn:hover {
