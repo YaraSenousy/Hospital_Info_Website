@@ -110,6 +110,45 @@ mark {
     border-radius: 10px;
 }
 
+.btn2 {
+    background-color: rgba(80, 47, 3, 0.3) !important;
+    color: rgba(80,47,3,0.8) !important;
+    border:none !important;
+    font-size: 0.9rem !important;
+    border-radius: 15px !important;
+    transition: all 0.3s ease !important;
+    padding: 10px 15px;
+    margin-bottom: 0.5rem !important;
+    font-weight: 600 !important;
+    align-self: right;
+}
 
+.btn2:hover {
+    background-color: rgba(80, 47, 3, 0.8) !important;
+    color: white !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(80, 47, 3, 0.2) !important;
+}
+
+.btn2-call {
+    background-color: rgba(80, 47, 3, 0.8) !important;
+    color: white !important;
+    padding: 6px 18px !important;
+    border-radius: 25px !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 0.9rem !important;
+    transition: all 0.3s ease !important;
+    margin-bottom: 0.5rem !important;
+    font-weight: 500 !important;
+}
+
+.btn2-call:hover {
+    background-color: rgba(80, 47, 3, 1) !important;
+    transform: scale(1.02);
+    box-shadow: 0 2px 5px rgba(80, 47, 3, 0.3) !important;
+}
 
 
