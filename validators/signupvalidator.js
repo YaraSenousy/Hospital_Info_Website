@@ -55,8 +55,8 @@ const signupValidationRules = [
   body("gender")
     .notEmpty()
     .withMessage("Gender field is required")
-    .isIn(["M", "F"])
-    .withMessage("Gender must be either 'M' or 'F'")
+    .isIn(["male", "female"])
+    .withMessage("Gender must be either 'male' or 'female'")
 ];
 
 module.exports = signupValidationRules;

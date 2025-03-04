@@ -1,5 +1,5 @@
 // Mock user data - Replace with actual backend integration
-import API_ENDPOINTS from './apiEndpoints.js';
+import API_ENDPOINTS from '../../apiEndPoints.js';
 
 
 // Initialize page

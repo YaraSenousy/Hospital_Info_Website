@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  
   "scripts": {
-    "run": "node index1.js",
+    "server": "node index1.js",
     "test": "jest",
     "dev": "nodemon index1.js"
   },

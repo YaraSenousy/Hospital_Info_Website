@@ -12,4 +12,4 @@ const API_ENDPOINTS = {
     ADD_DOCTOR: BASE_URL + '/doctor/addDoctor'
 }
 
-module.exports = API_ENDPOINTS;
+export default API_ENDPOINTS;

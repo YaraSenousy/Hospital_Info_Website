@@ -1,4 +1,4 @@
-//const API_ENDPOINTS = require('../../apiEndPoints');
+import API_ENDPOINTS from '../../apiEndPoints.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const loginForm = document.getElementById('loginForm');
@@ -15,7 +15,7 @@ async function handleLogin(event) {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch("http://localhost:8080/hospital/user/login", {
+    const response = await fetch(API_ENDPOINTS.LOGIN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ async function handleSignup(event) {
   const gender = document.getElementById('signupGender').value;
 
   try {
-    const response = await fetch("http://localhost:8080/hospital/patient/signup", {
+    const response = await fetch(API_ENDPOINTS.SIGNUP, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

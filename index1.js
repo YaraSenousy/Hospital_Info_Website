@@ -9,10 +9,7 @@ const app = express();
 
 DBConnect();
 
-const corsOptions = {
-  origin: "http://127.0.0.1:3000",
-  optionsSuccessStatus: 200,
-};
+
 app.use(
   cors({
     origin: "http://127.0.0.1:3000",
