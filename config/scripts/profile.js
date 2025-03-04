@@ -1,11 +1,6 @@
 // Mock user data - Replace with actual backend integration
-const currentUser = {
-    role: 'admin', // Change this to test different views ('admin', 'doctor', 'patient')
-    name: 'John Doe',
-    email: 'john@example.com',
-    phone: '123-456-7890',
-    birthDate: '1990-01-01'
-};
+import API_ENDPOINTS from './apiEndpoints.js';
+
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
@@ -14,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function fetchUserInfo() {
     try {
-        const response = await fetch(API_ENDPOINTS.userInfo);
+        const response = await fetch(API_ENDPOINTS.PROFILE);
         
         if (response.status === 401 || response.status === 403) {
             // Unauthorized or Forbidden - redirect to login

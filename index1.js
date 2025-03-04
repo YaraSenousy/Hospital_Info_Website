@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const DBConnect = require('./config/database.js')
 require('dotenv').config();
 const router = require('./routes/apiRoutes.js');
@@ -10,11 +11,12 @@ const app = express();
 
 DBConnect();
 
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/hospital', router);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.listen(port, ()=>{
     console.log(`Server running on port ${port}`);
 });
