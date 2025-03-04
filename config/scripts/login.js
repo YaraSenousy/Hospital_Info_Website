@@ -1,4 +1,4 @@
-import API_ENDPOINTS from './apiEndpoints.js';
+//const API_ENDPOINTS = require('../../apiEndPoints');
 
 document.addEventListener('DOMContentLoaded', function() {
   const loginForm = document.getElementById('loginForm');
@@ -15,7 +15,7 @@ async function handleLogin(event) {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch(API_ENDPOINTS.LOGIN, {
+    const response = await fetch("http://localhost:8080/hospital/user/login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -42,7 +42,8 @@ async function handleLogin(event) {
 async function handleSignup(event) {
   event.preventDefault();
 
-  const name = document.getElementById('signupName').value;
+  const firstName = document.getElementById('signupFirstName').value;
+  const lastName = document.getElementById('signupLastName').value;
   const email = document.getElementById('signupEmail').value;
   const password = document.getElementById('signupPassword').value;
   const birthDate = document.getElementById('signupBirthDate').value;
@@ -50,12 +51,12 @@ async function handleSignup(event) {
   const gender = document.getElementById('signupGender').value;
 
   try {
-    const response = await fetch(API_ENDPOINTS.SIGNUP, {
+    const response = await fetch("http://localhost:8080/hospital/patient/signup", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ name, email, password, birthDate, phoneNumber, gender })
+      body: JSON.stringify({ name: `${firstName} ${lastName}`, email, password, birthDate, phoneNumber, gender })
     });
 
     if (response.status === 201) {
