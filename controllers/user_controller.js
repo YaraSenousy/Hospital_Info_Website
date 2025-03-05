@@ -1,6 +1,6 @@
 const { User } = require("../models/User.model");
 const jwt = require("jsonwebtoken");
-const { uploadImage,deleteImage } = require("../config/cloudinaryhelpers");
+const { uploadImage, deleteImage } = require("../config/cloudinaryhelpers");
 const bcrypt = require("bcryptjs");
 
 const userController = {
@@ -11,10 +11,10 @@ const userController = {
       // Validate user credentials
       const user = await User.findOne({ email });
 
-      if (!user){
+      if (!user) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
-      
+
       // Compare entered password with stored hashed password
       const isMatch = await bcrypt.compare(password, user.password);
 
@@ -29,15 +29,27 @@ const userController = {
         { expiresIn: "15m" }
       );
 
-      // Send token in HTTP-only cookie
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-        maxAge: 15 * 60 * 1000, // 15 minutes
-      });
+      // // Send token in HTTP-only cookie
+      // res.cookie("token", token, {
+      //   httpOnly: true,
+      //   secure: process.env.NODE_ENV === "production",
+      //   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      //   maxAge: 15 * 60 * 1000, // 15 minutes,
+      // });
 
-      res.status(200).json({ message: "Login successful" });
+      // Production cookie settings (recommended)
+      // res.cookie("token", token, {
+      //   httpOnly: true,
+      //   secure: process.env.NODE_ENV === "production" ? true : false, // Secure only in production
+      //   sameSite: "none",
+      //   maxAge: 15 * 60 * 1000,
+      // });
+
+      
+
+      res.status(200).json({ message: "Login successful",
+        accessToken: token 
+       });
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
     }
@@ -132,13 +144,12 @@ const userController = {
       return res.status(401).json({ error: "Unauthorized" });
     }
     const userId = req.user.userId;
-    console.log('User ID:', userId); // Log the user ID
+    console.log("User ID:", userId); // Log the user ID
     const fieldsToReturn = "name birthDate email PhoneNumber gender image";
     if (userId) {
       try {
         const user = await User.findById(userId).select(fieldsToReturn);
         res.json(user);
-        
       } catch (err) {
         res.status(500).json(err);
       }
