@@ -238,4 +238,26 @@ mark {
         border-radius: 0 !important;
     }
 
+    .row {
+        flex-wrap: wrap;
+        height: auto !important; 
+    }
+
+    .feedback {
+        padding-bottom: 50px !important;
+        margin-bottom: 50px !important; 
+        overflow: hidden; 
+    }
+
+    .feedback img {
+        height: auto !important;
+        width: 100% !important;
+    }
+
+    .feedback .col-sm-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    
 }
