@@ -149,6 +149,7 @@ const userController = {
     if (userId) {
       try {
         const user = await User.findById(userId).select(fieldsToReturn);
+        console.log("user: ",user);
         res.json(user);
       } catch (err) {
         res.status(500).json(err);

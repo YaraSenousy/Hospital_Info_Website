@@ -7,41 +7,38 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 async function fetchUserInfo() {
-  try {
-    const token = sessionStorage.getItem('authToken');
-    const response = await fetch(API_ENDPOINTS.PROFILE, {
-      //credentials: 'include'
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    console.log(await response.json());
-    if (response.status === 401 || response.status === 403) {
-      // Unauthorized or Forbidden - redirect to login
-      const errorData = await response.json();
-      alert("Login failed: " + errorData);
+    try {
+      const token = sessionStorage.getItem('authToken');
+      const response = await fetch(API_ENDPOINTS.PROFILE, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      // First check for HTTP errors
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log("Error response:", errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      // Now safely parse the JSON
+      const userData = await response.json();
+      console.log("Received user data:", userData);
+  
+      // Validate response structure
+      if (!userData?.role) {
+        throw new Error("Invalid user data: role missing");
+      }
+  
+      initializeProfile(userData);
+      
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      sessionStorage.removeItem('authToken');
       window.location.href = "login.html";
-      return;
     }
-
-    if (!response.ok) throw new Error("Failed to fetch user info");
-
-    const userData = await response.json();
-
-    // Check if userData is empty or null
-    if (!userData || Object.keys(userData).length === 0) {
-      window.location.href = "login.html";
-      return;
-    }
-
-    initializeProfile(userData);
-  } catch (error) {
-    console.error("Error fetching user info:", error);
-    // Redirect to login on any error
-    window.location.href = "login.html";
   }
-}
 
 function initializeProfile(userData) {
   // Set user info
@@ -103,7 +100,7 @@ function populateDoctorForm(userData) {
 
 async function loadDoctors() {
   try {
-    const token = sessionStorage.getItem('authToken');
+    const token = sessionStorage.getItem("authToken");
     const response = await fetch(API_ENDPOINTS.GET_DOCTORS, {
       //credentials: "include",
       headers: {
