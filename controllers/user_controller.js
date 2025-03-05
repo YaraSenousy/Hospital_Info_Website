@@ -145,7 +145,7 @@ const userController = {
     }
     const userId = req.user.userId;
     console.log("User ID:", userId); // Log the user ID
-    const fieldsToReturn = "name birthDate email PhoneNumber gender image";
+    const fieldsToReturn = "name birthDate email PhoneNumber gender image role";
     if (userId) {
       try {
         const user = await User.findById(userId).select(fieldsToReturn);
