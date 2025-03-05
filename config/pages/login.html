@@ -20,37 +20,38 @@
            <div class="flip-card__inner">
               <div class="flip-card__front">
                  <div class="title">Log in</div>
-                 <form class="flip-card__form" action="">
-                    <input class="flip-card__input" name="email" placeholder="Email" type="email">
-                    <input class="flip-card__input" name="password" placeholder="Password" type="password">
-                    <button class="flip-card__btn">Let`s go!</button>
+                 <form class="flip-card__form" id="loginForm" action="">
+                    <input class="flip-card__input" id="email" name="email" placeholder="Email" type="email">
+                    <input class="flip-card__input" id="password" name="password" placeholder="Password" type="password">
+                    <div id="error-message" style="color: red; margin-top: 10px;"></div>
+                    <button type="submit" class="flip-card__btn">Let`s go!</button>
                  </form>
               </div>
               <div class="flip-card__back">
                  <div class="title">Sign up</div>
-                 <form class="flip-card__form" action="">
+                 <form class="flip-card__form" id="signupForm" action="">
                     <!-- Name Fields -->
-                    <input class="flip-card__input" placeholder="First Name" type="text" required>
-                    <input class="flip-card__input" placeholder="Last Name" type="text" required>
+                    <input class="flip-card__input" id="signupFirstName" placeholder="First Name" type="text" required>
+                    <input class="flip-card__input" id="signupLastName" placeholder="Last Name" type="text" required>
                     
                     <!-- Birth Date -->
-                    <input class="flip-card__input" type="date" required>
+                    <input class="flip-card__input" id="signupBirthDate" type="date" required>
                     
                     <!-- Gender Selection -->
-                    <select class="flip-card__input" required>
+                    <select class="flip-card__input" id="signupGender" required>
                         <option value="" disabled selected>Select Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                     </select>
                     
                     <!-- Contact Information -->
-                    <input class="flip-card__input" placeholder="Email" type="email" required>
-                    <input class="flip-card__input" placeholder="Phone Number" type="tel" pattern="[0-9]{11}" required>
+                    <input class="flip-card__input" id="signupEmail" placeholder="Email" type="email" required>
+                    <input class="flip-card__input" id="signupPhoneNumber" placeholder="Phone Number" type="tel" pattern="[0-9]{11}" required>
                     
                     <!-- Password -->
-                    <input class="flip-card__input" placeholder="Password" type="password" required>
+                    <input class="flip-card__input" id="signupPassword" placeholder="Password" type="password" required>
                     
-                    <button class="flip-card__btn">Confirm!</button>
+                    <button type="submit" class="flip-card__btn">Confirm!</button>
                  </form>
               </div>
            </div>
@@ -58,5 +59,6 @@
     </div>   
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="../scripts/login.js"></script>
 </body>
 </html>

@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  
   "scripts": {
+    "server": "node index1.js",
     "test": "jest",
     "dev": "nodemon index1.js"
   },

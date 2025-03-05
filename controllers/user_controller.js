@@ -33,7 +33,7 @@ const userController = {
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
         maxAge: 15 * 60 * 1000, // 15 minutes
       });
 
