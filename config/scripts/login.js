@@ -17,16 +17,17 @@ async function handleLogin(event) {
   try {
     const response = await fetch(API_ENDPOINTS.LOGIN, {
       method: 'POST',
+      //credentials: 'include', // Include cookies in the request
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ email, password }),
-      credentials: 'include' // Include cookies in the request
     });
 
     if (response.status === 200) {
       const data = await response.json();
       console.log('Login successful:', data.message);
+      sessionStorage.setItem('authToken', data.accessToken);
       window.location.href = 'profile.html'; // Redirect to profile page
     } else {
       const errorData = await response.json();

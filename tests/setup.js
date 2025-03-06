@@ -5,7 +5,7 @@ jest.setTimeout(30000); // Increase timeout to 30 seconds
 
 beforeAll(async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI_TESTING);
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to test database');
   } catch (error) {
     console.error('Database connection error:', error);

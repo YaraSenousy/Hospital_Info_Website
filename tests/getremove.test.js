@@ -18,7 +18,7 @@ describe("Doctor & Patient API Tests", () => {
       password: await bcrypt.hash("adminpassword123", 10),
       birthDate: "1990-01-01",
       phoneNumber: "+1234567890",
-      gender: "F",
+      gender: "female",
       role: "admin",
     };
     await User.create(adminUser);
@@ -38,7 +38,7 @@ describe("Doctor & Patient API Tests", () => {
         birthDate: faker.date.past({ years: 40 }).toISOString().split("T")[0],
         phoneNumber: "+201158820884",
         role: "doctor",
-        gender: faker.helpers.arrayElement(["M", "F"]),
+        gender: faker.helpers.arrayElement(["male", "female"]),
         expertiseLevel: [faker.lorem.word(), faker.lorem.word()],
       });
 
@@ -49,7 +49,7 @@ describe("Doctor & Patient API Tests", () => {
         birthDate: faker.date.past({ years: 30 }).toISOString().split("T")[0],
         phoneNumber: "+201158820884",
         role: "patient",
-        gender: faker.helpers.arrayElement(["M", "F"]),
+        gender: faker.helpers.arrayElement(["male", "female"]),
       });
     }
   });
