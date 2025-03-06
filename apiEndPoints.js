@@ -8,7 +8,7 @@ const API_ENDPOINTS = {
     DELETE_PATIENT: BASE_URL + '/patient/',
     GET_PATIENTS: BASE_URL + '/patient/getPatients',
     DELETE_DOCTOR: BASE_URL + '/doctor/',
-    GET_DOCTORS: BASE_URL + 'doctor/getDoctors',
+    GET_DOCTORS: BASE_URL + '/doctor/getDoctors',
     ADD_DOCTOR: BASE_URL + '/doctor/addDoctor'
 }
 

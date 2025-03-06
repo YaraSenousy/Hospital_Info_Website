@@ -1,6 +1,9 @@
 // Mock user data - Replace with actual backend integration
 import API_ENDPOINTS from "../../apiEndPoints.js";
 
+// Store user data globally after fetching
+let currentUserData = null;
+
 // Initialize page
 document.addEventListener("DOMContentLoaded", function () {
   fetchUserInfo();
@@ -28,7 +31,10 @@ async function fetchUserInfo() {
       if (!userData) {
         throw new Error("Invalid user data: missing");
       }
-  
+
+      // Store the user data globally
+      currentUserData = userData;
+      
       initializeProfile(userData);
       
     } catch (error) {
@@ -36,7 +42,7 @@ async function fetchUserInfo() {
       sessionStorage.removeItem('authToken');
       window.location.href = "login.html";
     }
-  }
+}
 
 function initializeProfile(userData) {
   // Set user info
@@ -50,7 +56,7 @@ function initializeProfile(userData) {
 
   // Load initial data
   if (userData.role === "admin") {
-    loadDoctors();
+    loadAdminDoctorsView();
   } else if (userData.role === "doctor") {
     loadPatients();
   } else if (userData.role === "patient") {
@@ -69,7 +75,7 @@ function hideAllViews() {
 }
 
 function toggleEditMode() {
-  const formId = `${currentUser.role}EditForm`;
+  const formId = `${currentUserData?.role}EditForm`;
   const form = document.getElementById(formId);
   if (form) {
     form.style.display = form.style.display === "none" ? "block" : "none";
@@ -78,19 +84,73 @@ function toggleEditMode() {
 
 // Admin Functions
 function showAddDoctorForm() {
-  const modal = new bootstrap.Modal(document.getElementById("addDoctorModal"));
-  modal.show();
+  //testing console log
+    console.log("Opening add doctor form...");
+    const modal = new bootstrap.Modal(document.getElementById("addDoctorModal"));
+    modal.show();
 }
 
-function submitAddDoctor() {
-  // Implement doctor addition logic
-  console.log("Adding new doctor...");
+async function submitAddDoctor() {
+  try {
+    const form = document.getElementById('addDoctorForm');
+    const formData = new FormData(form);
+    
+    // Get all form values and format them according to backend model
+    const doctorData = {
+      name: formData.get('name'),
+      birthDate: formData.get('birthDate'),
+      email: formData.get('email'),
+      password: "Doctor123", // Default password
+      phoneNumber: formData.get('phoneNumber'),
+      gender: formData.get('gender'),
+      role: "doctor",
+      // Handle multiple expertise levels
+      expertiseLevel: Array.from(form.querySelector('[name="expertiseLevel"]').selectedOptions).map(option => option.value)
+    };
+
+    // Validate required fields
+    const requiredFields = ['name', 'birthDate', 'email', 'phoneNumber', 'gender', 'expertiseLevel'];
+    const missingFields = requiredFields.filter(field => !doctorData[field] || 
+        (Array.isArray(doctorData[field]) && doctorData[field].length === 0));
+    
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+    }
+
+    console.log("Sending doctor data:", doctorData); // Debug log
+    
+    const token = sessionStorage.getItem('authToken');
+    const response = await fetch(API_ENDPOINTS.ADD_DOCTOR, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(doctorData)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log("Error response:", errorText); // Debug log
+      throw new Error(`Failed to add doctor: ${errorText}`);
+    }
+    
+    // Close modal and refresh doctor list
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addDoctorModal'));
+    modal.hide();
+    form.reset(); // Reset the form
+    loadDoctors(); // Refresh the list
+    alert('Doctor added successfully');
+  } catch (error) {
+    console.error("Error adding doctor:", error);
+    alert(error.message);
+  }
 }
 
 function populateDoctorForm(userData) {
   document.getElementById("doctorBirthDate").value = userData.birthDate || "";
   document.getElementById("doctorEmail").value = userData.email || "";
-  document.getElementById("doctorPhone").value = userData.phone || "";
+  document.getElementById("doctorPhone").value = userData.phoneNumber || "";
   // Add expertise level display
   document.getElementById("expertiseLevel").textContent =
     userData.expertiseLevel || "Not specified";
@@ -108,9 +168,10 @@ async function loadDoctors() {
     if (!response.ok) throw new Error("Failed to fetch doctors");
 
     const doctors = await response.json();
-    // Add expertise level to the displayed fields for doctors
+    console.log("Full doctors data:", JSON.stringify(doctors, null, 2)); // Detailed log of the entire response
+
     const tableHTML = createTable(doctors, getCurrentUserRole() === "admin", {
-      includedFields: ["name", "email", "phone", "expertiseLevel", "photo"],
+      includedFields: ["name", "email", "phoneNumber", "expertiseLevel", "image"]
     });
     const container =
       getCurrentUserRole() === "admin"
@@ -124,25 +185,25 @@ async function loadDoctors() {
   }
 }
 
-function loadPatients() {
-  // Mock patient data
-  const patients = [
-    {
-      name: "Alice Brown",
-      age: 30,
-      phone: "123-456-7890",
-      email: "alice@example.com",
-      photo: "default-user.png",
-    },
-  ];
-
-  const tableHTML = createTable(patients, currentUser.role === "admin");
-  const container =
-    currentUser.role === "admin"
-      ? document.getElementById("tableContainer")
-      : document.getElementById("doctorPatientsTable");
-
-  container.innerHTML = tableHTML;
+async function loadPatients() {
+  try {
+    const token = sessionStorage.getItem('authToken');
+    const response = await fetch(API_ENDPOINTS.GET_PATIENTS, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    
+    if (!response.ok) throw new Error('Failed to fetch patients');
+    
+    const patients = await response.json();
+    const tableHTML = createTable(patients, getCurrentUserRole() === "admin");
+    const container = document.getElementById("doctorPatientsTable");
+    container.innerHTML = tableHTML;
+  } catch (error) {
+    console.error("Error loading patients:", error);
+    showError("Failed to load patients list");
+  }
 }
 
 function createTable(data, isAdmin, options = {}) {
@@ -157,10 +218,11 @@ function createTable(data, isAdmin, options = {}) {
                     ${headers
                       .map((h) => {
                         // Format header text for better display
-                        const headerText =
-                          h === "expertiseLevel"
-                            ? "Expertise Level"
-                            : h.charAt(0).toUpperCase() + h.slice(1);
+                        const headerText = {
+                          expertiseLevel: "Expertise Level",
+                          phoneNumber: "Phone Number",
+                          image: "Profile Picture"
+                        }[h] || h.charAt(0).toUpperCase() + h.slice(1);
                         return `<th>${headerText}</th>`;
                       })
                       .join("")}
@@ -170,18 +232,26 @@ function createTable(data, isAdmin, options = {}) {
     `;
 
   data.forEach((item) => {
+    console.log("Processing item:", item); // test log
     html += "<tr>";
     headers.forEach((header) => {
       if (header === "Actions") {
         html += `<td><button class="btn btn-danger btn-sm" onclick="removeUser('${item.email}')">Remove</button></td>`;
-      } else if (header === "photo") {
-        html += `<td><img src="../images/${item[header]}" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%;"></td>`;
+      } else if (header === "image") {
+        // Check if the image path is a full URL or needs to be constructed
+        const imagePath = item[header] 
+          ? (item[header].startsWith('http') ? item[header] : `../images/${item[header]}`)
+          : '../images/default-user.png';
+        html += `<td><img src="${imagePath}" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%;" onerror="this.src='../images/default-user.png'"></td>`;
       } else if (header === "expertiseLevel") {
-        html += `<td><span class="badge bg-info">${
-          item[header] || "Not specified"
-        }</span></td>`;
+        const levels = Array.isArray(item[header]) ? item[header].join(", ") : item[header];
+        html += `<td><span class="badge bg-info">${levels || "Not specified"}</span></td>`;
       } else {
-        html += `<td>${item[header]}</td>`;
+        // Add debug console log for phoneNumber
+        if (header === "phoneNumber") {
+          console.log("Phone number value:", item[header]);
+        }
+        html += `<td>${item[header] || ''}</td>`;
       }
     });
     html += "</tr>";
@@ -191,7 +261,100 @@ function createTable(data, isAdmin, options = {}) {
   return html;
 }
 
-function removeUser(email) {
-  // Implement user removal logic
-  console.log("Removing user:", email);
+async function removeUser(email) {
+  try {
+    const token = sessionStorage.getItem('authToken');
+    const userRole = getCurrentUserRole();
+    const endpoint = userRole === 'doctor' ? API_ENDPOINTS.DELETE_PATIENT : API_ENDPOINTS.DELETE_DOCTOR;
+    
+    const response = await fetch(`${endpoint}${email}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+
+    if (!response.ok) throw new Error('Failed to remove user');
+    
+    // Refresh the appropriate list
+    if (userRole === 'doctor') {
+      loadPatients();
+    } else {
+      loadDoctors();
+    }
+  } catch (error) {
+    console.error("Error removing user:", error);
+    alert("Failed to remove user");
+  }
+}
+
+// Replace getCurrentUserRole with this
+function getCurrentUserRole() {
+    return currentUserData?.role || '';
+}
+
+// Admin view functions
+async function loadAdminDoctorsView() {
+  //testing console log
+    console.log("Loading doctors view...");
+    try {
+        const container = document.getElementById("tableContainer");
+        container.innerHTML = '<div class="text-center">Loading doctors...</div>';
+        
+        await loadDoctors();
+        
+        // Update the active button state
+        document.querySelectorAll('.admin-view-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector('[onclick="loadAdminDoctorsView()"]').classList.add('active');
+    } catch (error) {
+        console.error("Error loading doctors view:", error);
+        showError("Failed to load doctors view");
+    }
+}
+
+async function loadAdminPatientsView() {
+  //testing console log
+    console.log("Loading patients view...");
+    try {
+        const container = document.getElementById("tableContainer");
+        container.innerHTML = '<div class="text-center">Loading patients...</div>';
+        
+        const token = sessionStorage.getItem('authToken');
+        const response = await fetch(API_ENDPOINTS.GET_PATIENTS, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch patients');
+        
+        const patients = await response.json();
+        const tableHTML = createTable(patients, true, {
+            includedFields: ["name", "email", "phone", "birthDate"]
+        });
+        container.innerHTML = tableHTML;
+        
+        // Update the active button state
+        document.querySelectorAll('.admin-view-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector('[onclick="loadAdminPatientsView()"]').classList.add('active');
+    } catch (error) {
+        console.error("Error loading patients:", error);
+        showError("Failed to load patients list");
+    }
+}
+
+// Make functions globally accessible
+window.showAddDoctorForm = showAddDoctorForm;
+window.submitAddDoctor = submitAddDoctor;
+window.loadAdminDoctorsView = loadAdminDoctorsView;
+window.loadAdminPatientsView = loadAdminPatientsView;
+window.removeUser = removeUser;
+window.toggleEditMode = toggleEditMode;
+
+function showError(message) {
+    alert(message); 
 }

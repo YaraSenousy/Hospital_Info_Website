@@ -75,7 +75,7 @@ const userController = {
       //now update imageurl
       const user = await User.findByIdAndUpdate(
         userId,
-        { profilePicture: imageUrl }, // Update the profilePicture field
+        { image: imageUrl }, // Update the profilePicture field
         { new: true } // Return the updated user
       );
 
@@ -145,7 +145,7 @@ const userController = {
     }
     const userId = req.user.userId;
     console.log("User ID:", userId); // Log the user ID
-    const fieldsToReturn = "name birthDate email PhoneNumber gender image role expertiseLevel";
+    const fieldsToReturn = "name birthDate email phoneNumber gender image role expertiseLevel";
     if (userId) {
       try {
         const user = await User.findById(userId).select(fieldsToReturn);
