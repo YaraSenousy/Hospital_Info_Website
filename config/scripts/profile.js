@@ -15,20 +15,18 @@ async function fetchUserInfo() {
         },
       });
   
-      // First check for HTTP errors
+
       if (!response.ok) {
         const errorText = await response.text();
         console.log("Error response:", errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
   
-      // Now safely parse the JSON
       const userData = await response.json();
       console.log("Received user data:", userData);
   
-      // Validate response structure
-      if (!userData?.role) {
-        throw new Error("Invalid user data: role missing");
+      if (!userData) {
+        throw new Error("Invalid user data: missing");
       }
   
       initializeProfile(userData);
