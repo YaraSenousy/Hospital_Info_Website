@@ -22,7 +22,7 @@ const doctorController = {
         "birthDate",
         "email"
       ]; // List of allowed query parameters
-      let filter = {};
+      let filter = {role: "doctor"};
 
       for (const key of allowedFilters) {
         if (req.query[key]) {
