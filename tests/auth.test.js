@@ -23,7 +23,7 @@ describe("Authentication Tests", () => {
     birthDate: faker.date.past({ years: 30 }).toISOString().split("T")[0],
     phoneNumber: "+201158820884", // Format phone number correctly
     role,
-    gender: faker.helpers.arrayElement(["M", "F"]), // Match schema enum values
+    gender: faker.helpers.arrayElement(["male", "female"]), // Match schema enum values
     expertiseLevel:
       role === "doctor" ? [faker.lorem.word(), faker.lorem.word()] : undefined,
   });
@@ -94,7 +94,7 @@ describe("Authentication Tests", () => {
         password: await bcrypt.hash("adminpassword123", 10), // Hash the password
         birthDate: "1990-01-01",
         phoneNumber: "+1234567890",
-        gender: "F",
+        gender: "female",
         role: "admin",
       };
 
