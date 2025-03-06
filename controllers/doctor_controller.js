@@ -17,7 +17,7 @@ const doctorController = {
     try {
       const allowedFilters = [
         "name",
-        "PhoneNumber",
+        "phoneNumber",
         "expertiseLevel",
         "birthDate",
         "email"
@@ -31,7 +31,7 @@ const doctorController = {
       }
 
       //the fields to return
-      let fieldsToReturn = "name PhoneNumber expertiseLevel";
+      let fieldsToReturn = "name phoneNumber expertiseLevel";
 
       //if it admin return the image
       if (req.user.role == "admin") {

@@ -14,7 +14,7 @@ const patientController = {
   },
   getPatients: async (req, res) => {
     try {
-      const allowedFilters = ["name", "PhoneNumber", "birthDate", "email"]; // List of allowed query parameters
+      const allowedFilters = ["name", "phoneNumber", "birthDate", "email"]; // List of allowed query parameters
       const filter = { role: "patient" };
 
       for (const key of allowedFilters) {
@@ -24,7 +24,7 @@ const patientController = {
       }
 
       //the fields to return
-      let fieldsToReturn = "name birthDate PhoneNumber";
+      let fieldsToReturn = "name birthDate phoneNumber";
 
       //if it admin return the image
 
