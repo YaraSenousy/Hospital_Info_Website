@@ -55,7 +55,8 @@ function initializeProfile(userData) {
   document.getElementById("userRole").textContent =
     userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
   document.getElementById('userProfilePic').src = userData.image || '../images/default-user.png';
-
+  document.getElementById('profilePicMobile').src=userData.image || '../images/default-user.png'
+  document.getElementById('profilePicDesktop').src=userData.image || '../images/default-user.png'
 
   // Initialize profile picture click handler
   initializeProfilePicture(userData);
@@ -469,6 +470,9 @@ async function uploadProfilePicture() {
         
         // Update the profile picture in the UI
         document.getElementById('userProfilePic').src = result.user.image || '../images/default-user.png';
+        document.getElementById('profilePicMobile').src = result.user.image || '../images/default-user.png';
+        document.getElementById('profilePicDesktop').src = result.user.image || '../images/default-user.png';
+
         
         // Close the modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('profilePictureModal'));
