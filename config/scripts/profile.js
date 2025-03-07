@@ -49,7 +49,7 @@ function logout(){
   window.location.replace('/config/pages/login.html');
 }
 
-function initializeProfile(userData) {
+export function initializeProfile(userData) {
   // Set user info
   document.getElementById("userName").textContent = userData.name;
   document.getElementById("userRole").textContent =
