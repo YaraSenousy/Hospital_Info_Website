@@ -4,7 +4,7 @@ const path = require('path');
 // Configure where to store uploaded files temporarily
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Store files in the 'uploads' folder
+    cb(null, './uploads/'); // Store files in the 'uploads' folder
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);

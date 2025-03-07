@@ -73,7 +73,7 @@ const userController = {
       //now update imageurl
       const user = await User.findByIdAndUpdate(
         userId,
-        { image: imageUrl }, // Update the profilePicture field
+        { image: imageUrl }, // Update the image field
         { new: true } // Return the updated user
       );
 
