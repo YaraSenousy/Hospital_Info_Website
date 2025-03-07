@@ -8,6 +8,45 @@ document.addEventListener('DOMContentLoaded', function() {
   signupForm.addEventListener('submit', handleSignup);
 });
 
+// In login.js
+document.getElementById('signupForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const password = document.getElementById('signupPassword').value;
+  const errorList = document.getElementById('passwordErrorList');
+  const errorModal = new bootstrap.Modal(document.getElementById('passwordErrorModal'));
+  let errors = [];
+
+  // Clear previous errors
+  errorList.innerHTML = '';
+
+  // Password validation checks
+  if (password.length < 8) {
+      errors.push("Must be at least 8 characters");
+  }
+  if (!/[A-Z]/.test(password)) {
+      errors.push("Must contain at least one uppercase letter");
+  }
+  if (!/[0-9]/.test(password)) {
+      errors.push("Must contain at least one number");
+  }
+
+  if (errors.length > 0) {
+      // Add errors to list
+      errors.forEach(error => {
+          const li = document.createElement('li');
+          li.textContent = error;
+          errorList.appendChild(li);
+      });
+      
+      // Show error modal
+      errorModal.show();
+  } else {
+      // If valid, proceed with form submission
+      console.log('Form is valid, submitting...');
+      // Add your actual form submission logic here
+  }
+});
+
 async function handleLogin(event) {
   event.preventDefault();
 
