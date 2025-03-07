@@ -44,6 +44,11 @@ async function fetchUserInfo() {
     }
   }
 
+function logout(){
+  sessionStorage.clear(); 
+  window.location.replace('/config/pages/login.html');
+}
+
 function initializeProfile(userData) {
   // Set user info
   document.getElementById("userName").textContent = userData.name;
@@ -400,6 +405,7 @@ window.loadAdminDoctorsView = loadAdminDoctorsView;
 window.loadAdminPatientsView = loadAdminPatientsView;
 window.removeUser = removeUser;
 window.toggleEditMode = toggleEditMode;
+window.logout = logout;
 
 function showError(message) {
     alert(message); 
