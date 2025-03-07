@@ -2,16 +2,7 @@ const { User } = require("../models/User.model");
 const bcrypt = require("bcryptjs");
 
 const patientController = {
-  removePatient: async (req, res) => {
-    try {
-      const patient = await User.findByIdAndDelete(req.body.id);
-      patient
-        ? res.json(patient)
-        : res.status(404).json({ error: "Couldn't find the doctor" });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  },
+
   getPatients: async (req, res) => {
     try {
       const allowedFilters = ["name", "phoneNumber", "birthDate", "email"]; // List of allowed query parameters

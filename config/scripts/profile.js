@@ -269,20 +269,13 @@ async function removeUser(email) {
     }
 
     const token = sessionStorage.getItem('authToken');
-    const userRole = getCurrentUserRole();
-    
-    // Construct the full URL - make sure to include the email
-    const endpoint = userRole === 'doctor' 
-      ? `${API_ENDPOINTS.DELETE_PATIENT}${email}`
-      : `${API_ENDPOINTS.DELETE_DOCTOR}${email}`;
-
-    console.log("Attempting to delete user at endpoint:", endpoint); // Debug log
-
-    const response = await fetch(endpoint, {
+    const response = await fetch(API_ENDPOINTS.DELETE_USER, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
-      }
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email: email})
     });
 
     if (!response.ok) {
