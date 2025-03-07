@@ -34,7 +34,7 @@ async function fetchUserInfo() {
 
       // Store the user data globally
       currentUserData = userData;
-      
+  
       initializeProfile(userData);
       
     } catch (error) {
@@ -42,7 +42,7 @@ async function fetchUserInfo() {
       sessionStorage.removeItem('authToken');
       window.location.href = "login.html";
     }
-}
+  }
 
 function logout(){
   sessionStorage.clear(); 
@@ -55,6 +55,9 @@ function initializeProfile(userData) {
   document.getElementById("userRole").textContent =
     userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
 
+  // Initialize profile picture click handler
+  initializeProfilePicture(userData);
+
   // Show appropriate view
   hideAllViews();
   document.getElementById(`${userData.role}View`).style.display = "block";
@@ -63,14 +66,22 @@ function initializeProfile(userData) {
   if (userData.role === "admin") {
     loadAdminDoctorsView();
   } else if (userData.role === "doctor") {
+    // Update expertise level for doctor
+    const expertiseLevels = Array.isArray(userData.expertiseLevel) 
+      ? userData.expertiseLevel.join(", ") 
+      : userData.expertiseLevel || "Not specified";
+    document.getElementById("expertiseLevel").textContent = expertiseLevels;
+    
     loadPatients();
+    document.getElementById("editProfileBtn").style.display = "block";
   } else if (userData.role === "patient") {
     loadDoctors();
+    // Only show edit button for patient
+    document.getElementById("editProfileBtn").style.display = "block";
   }
 
-  // Show/hide edit button based on role
-  const editButton = document.getElementById("editProfileBtn");
-  editButton.style.display = userData.role === "admin" ? "none" : "block";
+  // Initialize profile picture click handler
+  initializeProfilePicture(userData);
 }
 
 function hideAllViews() {
@@ -83,7 +94,17 @@ function toggleEditMode() {
   const formId = `${currentUserData?.role}EditForm`;
   const form = document.getElementById(formId);
   if (form) {
-    form.style.display = form.style.display === "none" ? "block" : "none";
+    if (form.style.display === "none") {
+      form.style.display = "block";
+      // Populate form with current user data
+      if (currentUserData.role === "doctor") {
+        populateDoctorForm(currentUserData);
+      } else if (currentUserData.role === "patient") {
+        populatePatientForm(currentUserData);
+      }
+    } else {
+      form.style.display = "none";
+    }
   }
 }
 
@@ -91,8 +112,8 @@ function toggleEditMode() {
 function showAddDoctorForm() {
   //testing console log
     console.log("Opening add doctor form...");
-    const modal = new bootstrap.Modal(document.getElementById("addDoctorModal"));
-    modal.show();
+  const modal = new bootstrap.Modal(document.getElementById("addDoctorModal"));
+  modal.show();
 }
 
 async function submitAddDoctor() {
@@ -156,9 +177,15 @@ function populateDoctorForm(userData) {
   document.getElementById("doctorBirthDate").value = userData.birthDate || "";
   document.getElementById("doctorEmail").value = userData.email || "";
   document.getElementById("doctorPhone").value = userData.phoneNumber || "";
-  // Add expertise level display
-  document.getElementById("expertiseLevel").textContent =
-    userData.expertiseLevel || "Not specified";
+  
+  // Handle expertise level
+  const expertiseLevelSelect = document.getElementById("doctorExpertiseLevel");
+  if (expertiseLevelSelect && Array.isArray(userData.expertiseLevel)) {
+    // Clear previous selections
+    Array.from(expertiseLevelSelect.options).forEach(option => {
+      option.selected = userData.expertiseLevel.includes(option.value);
+    });
+  }
 }
 
 async function loadDoctors() {
@@ -202,9 +229,13 @@ async function loadPatients() {
     if (!response.ok) throw new Error('Failed to fetch patients');
     
     const patients = await response.json();
-    const tableHTML = createTable(patients, getCurrentUserRole() === "admin");
+    console.log("Received patients data:", patients); // Add this debug log
+    
+    const tableHTML = createTable(patients, getCurrentUserRole() === "admin", {
+      includedFields: ["name", "email", "phoneNumber","image"]
+    });
     const container = document.getElementById("doctorPatientsTable");
-    container.innerHTML = tableHTML;
+  container.innerHTML = tableHTML;
   } catch (error) {
     console.error("Error loading patients:", error);
     showError("Failed to load patients list");
@@ -250,9 +281,8 @@ function createTable(data, isAdmin, options = {}) {
         html += `<td><img src="${imagePath}" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%;" onerror="this.src='../images/default-user.png'"></td>`;
       } else if (header === "expertiseLevel") {
         const levels = Array.isArray(item[header]) ? item[header].join(", ") : item[header];
-        html += `<td><span class="badge bg-info">${levels || "Not specified"}</span></td>`;
+        html += `<td>${levels || "Not specified"}</td>`;
       } else {
-        // Add debug console log for phoneNumber
         if (header === "phoneNumber") {
           console.log("Phone number value:", item[header]);
         }
@@ -379,4 +409,267 @@ window.logout = logout;
 
 function showError(message) {
     alert(message); 
+}
+
+// Make the profile picture clickable only for non-admin users
+function initializeProfilePicture(userData) {
+    const profilePic = document.getElementById('userProfilePic');
+    if (userData.role !== 'admin') {
+        profilePic.style.cursor = 'pointer';
+        profilePic.title = 'Click to update profile picture';
+        profilePic.onclick = showProfilePictureModal;
+    }
+}
+
+function showProfilePictureModal() {
+    const modal = new bootstrap.Modal(document.getElementById('profilePictureModal'));
+    modal.show();
+}
+
+// Add preview functionality
+window.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.querySelector('#profilePictureForm input[type="file"]');
+    const preview = document.getElementById('imagePreview');
+    
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
+async function uploadProfilePicture() {
+    try {
+        const form = document.getElementById('profilePictureForm');
+        const formData = new FormData(form);
+        
+        const token = sessionStorage.getItem('authToken');
+        const response = await fetch(API_ENDPOINTS.UPDATE_PROFILE_PICTURE, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Failed to update profile picture: ${errorText}`);
+        }
+
+        const result = await response.json();
+        
+        // Update the profile picture in the UI
+        document.getElementById('userProfilePic').src = result.user.image || '../images/default-user.png';
+        
+        // Close the modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('profilePictureModal'));
+        modal.hide();
+        
+        // Reset the form
+        form.reset();
+        document.getElementById('imagePreview').style.display = 'none';
+        
+        alert('Profile picture updated successfully');
+    } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        alert(error.message);
+    }
+}
+
+// Make the upload function globally accessible
+window.uploadProfilePicture = uploadProfilePicture;
+
+// Add event listener for form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const doctorEditForm = document.getElementById('doctorEditForm');
+    if (doctorEditForm) {
+        doctorEditForm.addEventListener('submit', handleDoctorFormSubmit);
+    }
+});
+
+// Handle form submission
+async function handleDoctorFormSubmit(event) {
+    event.preventDefault();
+    
+    try {
+        // Get form values
+        const birthDateInput = document.getElementById('doctorBirthDate').value;
+        const emailInput = document.getElementById('doctorEmail').value;
+        const phoneInput = document.getElementById('doctorPhone').value;
+        const expertiseLevelsInput = Array.from(document.getElementById('doctorExpertiseLevel').selectedOptions).map(opt => opt.value);
+
+        // Create update object starting with current user data
+        const updatedData = {
+            birthDate: currentUserData.birthDate,
+            email: currentUserData.email,
+            phoneNumber: currentUserData.phoneNumber,
+            expertiseLevel: currentUserData.expertiseLevel
+        };
+
+        // Only update fields that have been changed
+        if (birthDateInput && birthDateInput !== new Date(currentUserData.birthDate).toISOString().split('T')[0]) {
+            updatedData.birthDate = new Date(birthDateInput).toISOString();
+        }
+        if (emailInput && emailInput !== currentUserData.email) {
+            updatedData.email = emailInput;
+        }
+        if (phoneInput && phoneInput !== currentUserData.phoneNumber) {
+            updatedData.phoneNumber = phoneInput;
+        }
+        if (expertiseLevelsInput.length > 0 && JSON.stringify(expertiseLevelsInput) !== JSON.stringify(currentUserData.expertiseLevel)) {
+            updatedData.expertiseLevel = expertiseLevelsInput;
+        }
+
+        console.log('Sending update:', updatedData); // Debug log
+
+        const token = sessionStorage.getItem('authToken');
+        const response = await fetch(API_ENDPOINTS.UPDATE_PROFILE, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to update profile');
+        }
+
+        const result = await response.json();
+        
+        // Update the global user data
+        currentUserData = result.user;
+        
+        // Update the display
+        document.getElementById('expertiseLevel').textContent = 
+            Array.isArray(currentUserData.expertiseLevel) 
+                ? currentUserData.expertiseLevel.join(', ') 
+                : currentUserData.expertiseLevel || 'Not specified';
+
+        // Hide the form
+        toggleEditMode();
+        
+        alert('Profile updated successfully');
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        alert(error.message);
+    }
+}
+
+// Add to your DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    const patientEditForm = document.getElementById('patientEditForm');
+    if (patientEditForm) {
+        patientEditForm.addEventListener('submit', handlePatientFormSubmit);
+    }
+});
+
+// Add this function to populate patient form
+function populatePatientForm(userData) {
+    if (userData.birthDate) {
+        const date = new Date(userData.birthDate);
+        const formattedDate = date.toISOString().split('T')[0];
+        document.getElementById("patientBirthDate").value = formattedDate;
+    }
+    document.getElementById("patientName").value = userData.name || "";
+    document.getElementById("patientEmail").value = userData.email || "";
+    document.getElementById("patientPhone").value = userData.phoneNumber || "";
+    document.getElementById("patientGender").value = userData.gender || "";
+}
+
+// Add patient form submission handler
+async function handlePatientFormSubmit(event) {
+    event.preventDefault();
+    
+    try {
+        // Get form elements with error checking
+        const nameElement = document.getElementById('patientName');
+        const birthDateElement = document.getElementById('patientBirthDate');
+        const emailElement = document.getElementById('patientEmail');
+        const phoneElement = document.getElementById('patientPhone');
+
+        // Verify all elements exist
+        if (!nameElement || !birthDateElement || !emailElement || !phoneElement) {
+            console.error('Form elements missing:', {
+                name: !!nameElement,
+                birthDate: !!birthDateElement,
+                email: !!emailElement,
+                phone: !!phoneElement
+            });
+            throw new Error('Form is missing some elements. Please refresh the page.');
+        }
+
+        // Get form values
+        const nameInput = nameElement.value;
+        const birthDateInput = birthDateElement.value;
+        const emailInput = emailElement.value;
+        const phoneInput = phoneElement.value;
+
+        // Create update object starting with current user data
+        const updatedData = {
+            name: currentUserData.name,
+            birthDate: currentUserData.birthDate,
+            email: currentUserData.email,
+            phoneNumber: currentUserData.phoneNumber
+        };
+
+        // Only update fields that have been changed
+        if (nameInput && nameInput !== currentUserData.name) {
+            updatedData.name = nameInput;
+        }
+        if (birthDateInput && birthDateInput !== new Date(currentUserData.birthDate).toISOString().split('T')[0]) {
+            updatedData.birthDate = new Date(birthDateInput).toISOString();
+        }
+        if (emailInput && emailInput !== currentUserData.email) {
+            updatedData.email = emailInput;
+        }
+        if (phoneInput && phoneInput !== currentUserData.phoneNumber) {
+            updatedData.phoneNumber = phoneInput;
+        }
+
+        console.log('Current user data:', currentUserData); // Debug log
+        console.log('Form values:', { nameInput, birthDateInput, emailInput, phoneInput }); // Debug log
+        console.log('Sending update:', updatedData); // Debug log
+
+        const token = sessionStorage.getItem('authToken');
+        const response = await fetch(API_ENDPOINTS.UPDATE_PROFILE, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to update profile');
+        }
+
+        const result = await response.json();
+        
+        // Update the global user data
+        currentUserData = result.user;
+        
+        // Update the display
+        document.getElementById("userName").textContent = currentUserData.name;
+        
+        // Hide the form
+        toggleEditMode();
+        
+        alert('Profile updated successfully');
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        alert(error.message);
+    }
 }
