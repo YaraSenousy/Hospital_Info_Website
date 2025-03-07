@@ -66,9 +66,9 @@ const userController = {
       // Update the user's profile picture in the database
       const userId = req.user.userId;
       //first delete current url
-      const currentimageUrl = await User.findOne({ _id: userId }).image;
-      if (currentimageUrl) {
-        await deleteImage(currentimageUrl);
+      const currentUser = await User.findById(userId);
+      if (currentUser && currentUser.image) {
+        await deleteImage(currentUser.image);
       }
       //now update imageurl
       const user = await User.findByIdAndUpdate(

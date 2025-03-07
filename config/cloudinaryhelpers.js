@@ -19,13 +19,24 @@ const uploadImage = async (filePath) => {
 };
 
 // Delete Image Function
-const deleteImage = async (publicId) => {
+const deleteImage = async (imageUrl) => {
   try {
+    // Extract the public ID from the URL
+    // Format is typically: https://res.cloudinary.com/[cloud_name]/image/upload/v[version]/[folder]/[public_id].[extension]
+    if (!imageUrl) return;
+    
+    const urlParts = imageUrl.split('/');
+    const publicIdWithExtension = urlParts[urlParts.length - 1];
+    const publicIdParts = publicIdWithExtension.split('.');
+    const folder = urlParts[urlParts.length - 2];
+    
+    // Combine folder and filename without extension to get the full public ID
+    const publicId = `${process.env.CLOUDINARY_FOLDER}/${publicIdParts[0]}`;
+    
     await cloudinary.uploader.destroy(publicId);
     console.log("Image deleted successfully from cloudinary");
   } catch (error) {
     console.error("cloudinary Deletion Error:", error);
-    throw error;
   }
 };
 
