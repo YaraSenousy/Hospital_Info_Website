@@ -48,7 +48,7 @@ const signupValidationRules = [
   body("phoneNumber")
     .notEmpty()
     .withMessage("Phone number is required")
-    .isMobilePhone()
+    .isMobilePhone("ar-EG")
     .withMessage("Invalid phone number"),
 
   // gender validation
