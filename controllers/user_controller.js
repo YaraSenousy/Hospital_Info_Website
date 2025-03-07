@@ -157,6 +157,28 @@ const userController = {
       res.status(404).json({ error: "Couldn't find the user" });
     }
   },
+
+  removeUser: async (req, res) => {
+    try {
+      const { email } = req.body;
+  
+      // Validate email is provided
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+  
+      const user = await User.findOneAndDelete({ email });
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      res.sendStatus(204);
+  
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
 };
 
 module.exports = userController;

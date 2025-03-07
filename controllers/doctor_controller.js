@@ -2,17 +2,6 @@ const { User } = require("../models/User.model");
 const bcrypt = require("bcryptjs");
 
 const doctorController = {
-  removeDoctor: async (req, res) => {
-    try {
-      const doctor = await User.findByIdAndDelete(req.body.id);
-      doctor
-        ? res.json(doctor)
-        : res.status(404).json({ error: "Couldn't find the doctor" });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  },
-
   getDoctors: async (req, res) => {
     try {
       const allowedFilters = [
