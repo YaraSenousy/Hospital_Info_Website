@@ -15,9 +15,18 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body text-center">
-                        <img id="userProfilePic" src="../images/default-user.png"  
-                             class="rounded-circle mb-3" 
-                             style="width: 150px; height: 150px; object-fit: cover;">
+                        <div class="position-relative">
+                            <img id="userProfilePic" 
+                                 src="../images/default-user.png"  
+                                 class="rounded-circle mb-3" 
+                                 style="width: 150px; height: 150px; object-fit: cover; transition: opacity 0.3s"
+                                 onerror="this.src='../images/default-user.png'">
+                            <div id="profilePicLoader" class="position-absolute top-50 start-50 translate-middle" style="display: none;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
                         <h5 id="userName" class="card-title">User Name</h5>
                         <p id="userRole" class="card-text text-muted">Role</p>
                         <button id="logoutBtn" class="btn btn-primary" onclick="logout()">Logout</button>

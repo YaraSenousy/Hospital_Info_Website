@@ -55,6 +55,17 @@ function initializeProfile(userData) {
   document.getElementById("userRole").textContent =
     userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
 
+  // Set profile picture
+  const profilePic = document.getElementById('userProfilePic');
+  if (userData.image) {
+    const imageUrl = userData.image.startsWith('http') ? userData.image : `../images/${userData.image}`;
+    profilePic.src = imageUrl;
+    profilePic.onerror = function() {
+      this.src = '../images/default-user.png';
+      console.error('Failed to load image:', imageUrl);
+    };
+  }
+
   // Initialize profile picture click handler
   initializeProfilePicture(userData);
 
@@ -449,6 +460,15 @@ async function uploadProfilePicture() {
         const form = document.getElementById('profilePictureForm');
         const formData = new FormData(form);
         
+        // Show loading state
+        const uploadButton = document.querySelector('[onclick="uploadProfilePicture()"]');
+        const profilePic = document.getElementById('userProfilePic');
+        uploadButton.disabled = true;
+        uploadButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Uploading...';
+        
+        // Show loading state on profile picture
+        profilePic.style.opacity = '0.5';
+        
         const token = sessionStorage.getItem('authToken');
         const response = await fetch(API_ENDPOINTS.UPDATE_PROFILE_PICTURE, {
             method: 'POST',
@@ -464,22 +484,51 @@ async function uploadProfilePicture() {
         }
 
         const result = await response.json();
+        console.log('Upload response:', result); // Debug log
         
-        // Update the profile picture in the UI
-        document.getElementById('userProfilePic').src = result.user.image || '../images/default-user.png';
+        // Update the global user data
+        currentUserData = result.user;
         
-        // Close the modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('profilePictureModal'));
-        modal.hide();
-        
-        // Reset the form
-        form.reset();
-        document.getElementById('imagePreview').style.display = 'none';
-        
-        alert('Profile picture updated successfully');
+        // Update the profile picture immediately with the new URL
+        if (currentUserData.image) {
+            const imageUrl = currentUserData.image.startsWith('http') 
+                ? currentUserData.image 
+                : `../images/${currentUserData.image}`;
+                
+            // Create a temporary image to check if the new URL is ready
+            const tempImage = new Image();
+            tempImage.onload = function() {
+                profilePic.src = imageUrl;
+                profilePic.style.opacity = '1';
+                
+                // Close the modal and show success message only after image is loaded
+                const modal = bootstrap.Modal.getInstance(document.getElementById('profilePictureModal'));
+                modal.hide();
+                form.reset();
+                document.getElementById('imagePreview').style.display = 'none';
+                alert('Profile picture updated successfully');
+            };
+            
+            tempImage.onerror = function() {
+                // If the new image fails to load, retry after a short delay
+                setTimeout(() => {
+                    profilePic.src = imageUrl;
+                    profilePic.style.opacity = '1';
+                }, 1000);
+            };
+            
+            tempImage.src = imageUrl;
+        }
+
     } catch (error) {
         console.error('Error uploading profile picture:', error);
+        document.getElementById('userProfilePic').style.opacity = '1';
         alert(error.message);
+    } finally {
+        // Reset upload button
+        const uploadButton = document.querySelector('[onclick="uploadProfilePicture()"]');
+        uploadButton.disabled = false;
+        uploadButton.textContent = 'Upload';
     }
 }
 
@@ -597,6 +646,7 @@ async function handlePatientFormSubmit(event) {
         const birthDateElement = document.getElementById('patientBirthDate');
         const emailElement = document.getElementById('patientEmail');
         const phoneElement = document.getElementById('patientPhone');
+        const genderElement = document.getElementById('patientGender');
 
         // Verify all elements exist
         if (!nameElement || !birthDateElement || !emailElement || !phoneElement) {
@@ -604,7 +654,8 @@ async function handlePatientFormSubmit(event) {
                 name: !!nameElement,
                 birthDate: !!birthDateElement,
                 email: !!emailElement,
-                phone: !!phoneElement
+                phone: !!phoneElement,
+                gender: !!genderElement
             });
             throw new Error('Form is missing some elements. Please refresh the page.');
         }
@@ -614,13 +665,15 @@ async function handlePatientFormSubmit(event) {
         const birthDateInput = birthDateElement.value;
         const emailInput = emailElement.value;
         const phoneInput = phoneElement.value;
+        const genderInput = genderElement.value;
 
         // Create update object starting with current user data
         const updatedData = {
             name: currentUserData.name,
             birthDate: currentUserData.birthDate,
             email: currentUserData.email,
-            phoneNumber: currentUserData.phoneNumber
+            phoneNumber: currentUserData.phoneNumber,
+            gender: currentUserData.gender
         };
 
         // Only update fields that have been changed
@@ -636,9 +689,12 @@ async function handlePatientFormSubmit(event) {
         if (phoneInput && phoneInput !== currentUserData.phoneNumber) {
             updatedData.phoneNumber = phoneInput;
         }
+        if (genderInput && genderInput !== currentUserData.gender) {
+            updatedData.gender = genderInput;
+        }
 
         console.log('Current user data:', currentUserData); // Debug log
-        console.log('Form values:', { nameInput, birthDateInput, emailInput, phoneInput }); // Debug log
+        console.log('Form values:', { nameInput, birthDateInput, emailInput, phoneInput, genderInput }); // Debug log
         console.log('Sending update:', updatedData); // Debug log
 
         const token = sessionStorage.getItem('authToken');
@@ -671,5 +727,46 @@ async function handlePatientFormSubmit(event) {
     } catch (error) {
         console.error('Error updating profile:', error);
         alert(error.message);
+    }
+}
+
+async function refreshUserData() {
+    try {
+        const token = sessionStorage.getItem('authToken');
+        const response = await fetch(API_ENDPOINTS.PROFILE, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch updated user data');
+
+        const userData = await response.json();
+        currentUserData = userData;
+        
+        // Update profile picture with loading state
+        const profilePic = document.getElementById('userProfilePic');
+        if (userData.image) {
+            // Show loading spinner while image loads
+            profilePic.style.opacity = '0.5';
+            
+            const imageUrl = userData.image.startsWith('http') ? userData.image : `../images/${userData.image}`;
+            const tempImage = new Image();
+            
+            tempImage.onload = function() {
+                profilePic.src = imageUrl;
+                profilePic.style.opacity = '1';
+            };
+            
+            tempImage.onerror = function() {
+                profilePic.src = '../images/default-user.png';
+                profilePic.style.opacity = '1';
+                console.error('Failed to load image:', imageUrl);
+            };
+            
+            tempImage.src = imageUrl;
+        }
+    } catch (error) {
+        console.error('Error refreshing user data:', error);
     }
 }

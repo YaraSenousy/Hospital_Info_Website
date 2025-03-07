@@ -2,6 +2,7 @@ const { User } = require("../models/User.model");
 const jwt = require("jsonwebtoken");
 const { uploadImage, deleteImage } = require("../config/cloudinaryhelpers");
 const bcrypt = require("bcryptjs");
+const fs = require("fs");
 
 const userController = {
   login: async (req, res) => {
@@ -55,9 +56,7 @@ const userController = {
     try {
       // Check if a file was uploaded
       if (!req.file) {
-        return res
-          .status(400)
-          .json({ message: "No file uploaded or invalid file type" });
+        return res.status(400).json({ message: "No file uploaded or invalid file type" });
       }
 
       // Upload the image to Cloudinary using the uploadImage function
@@ -81,10 +80,12 @@ const userController = {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Return the updated user with the new profile picture URL
-      res
-        .status(200)
-        .json({ message: "Profile picture updated successfully", user });
+      // Return both the temporary preview and the final Cloudinary URL
+      res.status(200).json({
+        message: "Profile picture updated successfully",
+        user,
+        imageUrl: imageUrl
+      });
     } catch (error) {
       console.error("Error updating profile picture:", error);
 
