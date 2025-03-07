@@ -45,11 +45,7 @@ const userController = {
       //   maxAge: 15 * 60 * 1000,
       // });
 
-      
-
-      res.status(200).json({ message: "Login successful",
-        accessToken: token 
-       });
+      res.status(200).json({ message: "Login successful", accessToken: token });
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
     }
@@ -71,11 +67,13 @@ const userController = {
       const userId = req.user.userId;
       //first delete current url
       const currentimageUrl = await User.findOne({ _id: userId }).image;
-      await deleteImage(currentimageUrl);
+      if (currentimageUrl) {
+        await deleteImage(currentimageUrl);
+      }
       //now update imageurl
       const user = await User.findByIdAndUpdate(
         userId,
-        { profilePicture: imageUrl }, // Update the profilePicture field
+        { image: imageUrl }, // Update the profilePicture field
         { new: true } // Return the updated user
       );
 
@@ -145,11 +143,12 @@ const userController = {
     }
     const userId = req.user.userId;
     console.log("User ID:", userId); // Log the user ID
-    const fieldsToReturn = "name birthDate email PhoneNumber gender image role expertiseLevel";
+    const fieldsToReturn =
+      "name birthDate email phoneNumber gender image role expertiseLevel";
     if (userId) {
       try {
         const user = await User.findById(userId).select(fieldsToReturn);
-        console.log("user: ",user);
+        console.log("user: ", user);
         res.json(user);
       } catch (err) {
         res.status(500).json(err);

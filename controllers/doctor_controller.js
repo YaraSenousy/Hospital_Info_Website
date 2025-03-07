@@ -17,12 +17,12 @@ const doctorController = {
     try {
       const allowedFilters = [
         "name",
-        "PhoneNumber",
+        "phoneNumber",
         "expertiseLevel",
         "birthDate",
         "email"
       ]; // List of allowed query parameters
-      let filter = {};
+      let filter = {role: "doctor"};
 
       for (const key of allowedFilters) {
         if (req.query[key]) {
@@ -31,7 +31,7 @@ const doctorController = {
       }
 
       //the fields to return
-      let fieldsToReturn = "name PhoneNumber expertiseLevel";
+      let fieldsToReturn = "name phoneNumber expertiseLevel";
 
       //if it admin return the image
       if (req.user.role == "admin") {
