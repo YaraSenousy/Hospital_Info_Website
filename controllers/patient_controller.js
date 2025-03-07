@@ -14,7 +14,7 @@ const patientController = {
   },
   getPatients: async (req, res) => {
     try {
-      const allowedFilters = ["name", "phoneNumber", "birthDate", "email"]; // List of allowed query parameters
+      const allowedFilters = ["name", "phoneNumber", "birthDate", "email","image"]; // List of allowed query parameters
       const filter = { role: "patient" };
 
       for (const key of allowedFilters) {
@@ -23,14 +23,8 @@ const patientController = {
         }
       }
 
-      //the fields to return
-      let fieldsToReturn = "name birthDate phoneNumber";
-
-      //if it admin return the image
-
-      if (req.user.role == "admin") {
-        fieldsToReturn += " image email";
-      }
+      //the fields to return - include email and image for all users
+      let fieldsToReturn = "name birthDate phoneNumber email image";
 
       // Pagination
       const page = parseInt(req.query.page);

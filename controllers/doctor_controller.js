@@ -20,7 +20,8 @@ const doctorController = {
         "phoneNumber",
         "expertiseLevel",
         "birthDate",
-        "email"
+        "email",
+        "image"
       ]; // List of allowed query parameters
       let filter = {role: "doctor"};
 
@@ -30,13 +31,8 @@ const doctorController = {
         }
       }
 
-      //the fields to return
-      let fieldsToReturn = "name phoneNumber expertiseLevel";
-
-      //if it admin return the image
-      if (req.user.role == "admin") {
-        fieldsToReturn += " image email";
-      }
+      //the fields to return - include email and image for all users
+      let fieldsToReturn = "name phoneNumber expertiseLevel email image";
 
       // Pagination
       const page = parseInt(req.query.page);
