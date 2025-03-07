@@ -386,7 +386,7 @@ async function loadAdminPatientsView() {
         
         const patients = await response.json();
         const tableHTML = createTable(patients, true, {
-            includedFields: ["name", "email", "phoneNumber", "birthDate"]
+            includedFields: ["name", "email", "phoneNumber", "image"]
         });
         container.innerHTML = tableHTML;
         
