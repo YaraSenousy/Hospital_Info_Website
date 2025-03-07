@@ -263,28 +263,52 @@ function createTable(data, isAdmin, options = {}) {
 
 async function removeUser(email) {
   try {
+    // Ask for confirmation before removing
+    if (!confirm(`Are you sure you want to remove user with email: ${email}?`)) {
+      return;
+    }
+
     const token = sessionStorage.getItem('authToken');
     const userRole = getCurrentUserRole();
-    const endpoint = userRole === 'doctor' ? API_ENDPOINTS.DELETE_PATIENT : API_ENDPOINTS.DELETE_DOCTOR;
     
-    const response = await fetch(`${endpoint}${email}`, {
+    // Construct the full URL - make sure to include the email
+    const endpoint = userRole === 'doctor' 
+      ? `${API_ENDPOINTS.DELETE_PATIENT}${email}`
+      : `${API_ENDPOINTS.DELETE_DOCTOR}${email}`;
+
+    console.log("Attempting to delete user at endpoint:", endpoint); // Debug log
+
+    const response = await fetch(endpoint, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
       }
     });
 
-    if (!response.ok) throw new Error('Failed to remove user');
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log("Error response:", errorText); // Debug log
+      throw new Error(`Failed to remove user: ${errorText}`);
+    }
+    
+    // Show success message
+    alert('User removed successfully');
     
     // Refresh the appropriate list
-    if (userRole === 'doctor') {
-      loadPatients();
-    } else {
-      loadDoctors();
+    if (getCurrentUserRole() === 'admin') {
+      // If we're in the doctors view, reload doctors, otherwise reload patients
+      const doctorsButton = document.querySelector('[onclick="loadAdminDoctorsView()"]');
+      if (doctorsButton.classList.contains('active')) {
+        await loadAdminDoctorsView();
+      } else {
+        await loadAdminPatientsView();
+      }
+    } else if (getCurrentUserRole() === 'doctor') {
+      await loadPatients();
     }
   } catch (error) {
     console.error("Error removing user:", error);
-    alert("Failed to remove user");
+    showError(error.message);
   }
 }
 
@@ -315,7 +339,6 @@ async function loadAdminDoctorsView() {
 }
 
 async function loadAdminPatientsView() {
-  //testing console log
     console.log("Loading patients view...");
     try {
         const container = document.getElementById("tableContainer");
@@ -332,7 +355,7 @@ async function loadAdminPatientsView() {
         
         const patients = await response.json();
         const tableHTML = createTable(patients, true, {
-            includedFields: ["name", "email", "phone", "birthDate"]
+            includedFields: ["name", "email", "phoneNumber", "birthDate"]
         });
         container.innerHTML = tableHTML;
         
