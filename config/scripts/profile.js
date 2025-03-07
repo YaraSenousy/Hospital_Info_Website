@@ -54,6 +54,8 @@ function initializeProfile(userData) {
   document.getElementById("userName").textContent = userData.name;
   document.getElementById("userRole").textContent =
     userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
+  document.getElementById('userProfilePic').src = userData.image || '../images/default-user.png';
+
 
   // Initialize profile picture click handler
   initializeProfilePicture(userData);
