@@ -485,7 +485,7 @@ async function uploadProfilePicture() {
         alert('Profile picture updated successfully');
     } catch (error) {
         console.error('Error uploading profile picture:', error);
-        alert(error.message);
+        alert("Uploading Profile Picture...This might take awhile");
     }
 }
 
