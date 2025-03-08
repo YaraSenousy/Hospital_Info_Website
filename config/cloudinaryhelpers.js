@@ -34,7 +34,7 @@ const deleteImage = async (imageUrl) => {
     const publicId = `${process.env.CLOUDINARY_FOLDER}/${publicIdParts[0]}`;
     
     await cloudinary.uploader.destroy(publicId);
-    console.log("Image deleted successfully from cloudinary");
+    //console.log("Image deleted successfully from cloudinary");
   } catch (error) {
     console.error("cloudinary Deletion Error:", error);
   }

@@ -450,16 +450,16 @@ async function uploadProfilePicture() {
     try {
         const form = document.getElementById('profilePictureForm');
         const formData = new FormData(form);
-        
+        console.log('Uploading profile picture...'); // Debug log
         const token = sessionStorage.getItem('authToken');
         const response = await fetch(API_ENDPOINTS.UPDATE_PROFILE_PICTURE, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`
             },
             body: formData
         });
-
+        console.log('Picture uploaded..'); // Debug log
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`Failed to update profile picture: ${errorText}`);

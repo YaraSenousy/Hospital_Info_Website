@@ -14,7 +14,8 @@ app.use(
   cors({
     origin: "http://127.0.0.1:3000",
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "Set-Cookie"]
+    allowedHeaders: ["Content-Type", "Authorization", "Set-Cookie"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
   })
 );
 
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(cookieParser());
 app.use("/hospital", router);
-
+app.options("*", cors());
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

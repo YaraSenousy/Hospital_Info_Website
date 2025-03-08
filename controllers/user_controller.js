@@ -59,10 +59,8 @@ const userController = {
           .status(400)
           .json({ message: "No file uploaded or invalid file type" });
       }
-
       // Upload the image to Cloudinary using the uploadImage function
       const imageUrl = await uploadImage(req.file.path);
-
       // Update the user's profile picture in the database
       const userId = req.user.userId;
       //first delete current url
@@ -76,18 +74,14 @@ const userController = {
         { image: imageUrl }, // Update the image field
         { new: true } // Return the updated user
       );
-
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
       // Return the updated user with the new profile picture URL
-      res
-        .status(200)
-        .json({ message: "Profile picture updated successfully", user });
+      return res.status(200).json({ message: "Profile picture updated successfully", user });
     } catch (error) {
       console.error("Error updating profile picture:", error);
-
       // Delete the temporary file if an error occurs (only if uploadImage didn't handle it)
       if (req.file && !error.handledByUploadImage) {
         fs.unlinkSync(req.file.path);
